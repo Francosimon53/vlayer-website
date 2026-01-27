@@ -25,7 +25,17 @@ export default function Navbar() {
             <a href="#pricing" className="text-gray-600 hover:text-[#0066CC] transition-colors">
               Pricing
             </a>
-            <a href="https://github.com/vlayer" className="text-gray-600 hover:text-[#0066CC] transition-colors">
+            <a
+              href="https://playground-sandy-gamma.vercel.app"
+              className="text-[#7C3AED] font-medium hover:text-[#6D28D9] transition-colors flex items-center gap-1"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Playground
+            </a>
+            <a href="https://docs-nine-theta-28.vercel.app" className="text-gray-600 hover:text-[#0066CC] transition-colors">
               Docs
             </a>
             <a href="https://github.com/vlayer" className="text-gray-600 hover:text-[#0066CC] transition-colors">
@@ -70,7 +80,8 @@ export default function Navbar() {
             <div className="flex flex-col gap-4">
               <a href="#features" className="text-gray-600 hover:text-[#0066CC]">Features</a>
               <a href="#pricing" className="text-gray-600 hover:text-[#0066CC]">Pricing</a>
-              <a href="https://github.com/vlayer" className="text-gray-600 hover:text-[#0066CC]">Docs</a>
+              <a href="https://playground-sandy-gamma.vercel.app" className="text-[#7C3AED] font-medium hover:text-[#6D28D9]">Playground</a>
+              <a href="https://docs-nine-theta-28.vercel.app" className="text-gray-600 hover:text-[#0066CC]">Docs</a>
               <a href="https://github.com/vlayer" className="text-gray-600 hover:text-[#0066CC]">GitHub</a>
               <a
                 href="#get-started"
