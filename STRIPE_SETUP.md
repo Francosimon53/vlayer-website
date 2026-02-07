@@ -10,24 +10,42 @@ This document provides step-by-step instructions for setting up Stripe payments 
 
 ## Step 1: Database Migration
 
-Run this SQL in Supabase SQL Editor to add Stripe columns to the profiles table:
+Run the migration SQL in Supabase SQL Editor:
 
+**Option A: Using Supabase CLI (recommended)**
+```bash
+# Make sure you have Supabase CLI installed
+npm install -g supabase
+
+# Link to your project
+supabase link --project-ref your-project-ref
+
+# Run the migration
+supabase db push
+```
+
+**Option B: Manual SQL execution**
+1. Go to Supabase Dashboard → SQL Editor
+2. Copy the contents of `supabase/migrations/001_stripe_integration.sql`
+3. Paste and execute
+
+**What the migration does:**
+- Adds `plan`, `stripe_customer_id`, `stripe_subscription_id`, `subscription_status`, `current_period_end`, `trial_ends_at` columns to `profiles` table
+- Creates indexes for faster lookups
+- Sets up RLS policies for user access
+- Creates a `subscription_stats` view for analytics
+- Adds triggers for automatic `updated_at` timestamp
+
+**Verify the migration:**
 ```sql
--- Add Stripe columns to profiles table
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS plan TEXT DEFAULT 'free' CHECK (plan IN ('free', 'pro', 'enterprise'));
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS stripe_subscription_id TEXT;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS subscription_status TEXT DEFAULT 'none';
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS current_period_end TIMESTAMPTZ;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS trial_ends_at TIMESTAMPTZ;
+-- Check that columns were added
+SELECT column_name, data_type, is_nullable, column_default
+FROM information_schema.columns
+WHERE table_name = 'profiles'
+  AND column_name IN ('plan', 'stripe_customer_id', 'stripe_subscription_id');
 
--- Create indexes for faster lookups
-CREATE INDEX IF NOT EXISTS idx_profiles_stripe_customer ON profiles(stripe_customer_id);
-CREATE INDEX IF NOT EXISTS idx_profiles_plan ON profiles(plan);
-
--- RLS policy: users can read their own plan info
-CREATE POLICY IF NOT EXISTS "Users can view own plan" ON profiles
-  FOR SELECT USING (auth.uid() = id);
+-- Check subscription stats
+SELECT * FROM subscription_stats;
 ```
 
 ## Step 2: Create Stripe Products
