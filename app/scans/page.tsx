@@ -25,10 +25,12 @@ export default async function ScansPage() {
               <Link href="/" className="text-2xl font-bold text-[#0066CC]">vlayer</Link>
               <div className="flex gap-6">
                 <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">Dashboard</Link>
+                <Link href="/projects" className="text-gray-600 hover:text-gray-900">Projects</Link>
                 <Link href="/scans" className="text-gray-900 font-medium">Scans</Link>
                 <Link href="/templates" className="text-gray-600 hover:text-gray-900">Templates</Link>
                 <Link href="/reports" className="text-gray-600 hover:text-gray-900">Reports</Link>
                 <Link href="/team" className="text-gray-600 hover:text-gray-900">Team</Link>
+                <Link href="/settings" className="text-gray-600 hover:text-gray-900">Settings</Link>
               </div>
             </div>
           </div>
