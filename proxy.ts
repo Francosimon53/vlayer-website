@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -58,7 +58,7 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
 
   // Protected routes require authentication
-  const protectedPaths = ['/dashboard', '/scans', '/templates', '/reports', '/team'];
+  const protectedPaths = ['/dashboard', '/projects', '/scans', '/templates', '/reports', '/team', '/settings'];
   const isProtectedPath = protectedPaths.some(path =>
     request.nextUrl.pathname.startsWith(path)
   );
@@ -75,9 +75,11 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/dashboard/:path*',
+    '/projects/:path*',
     '/scans/:path*',
     '/templates/:path*',
     '/reports/:path*',
     '/team/:path*',
+    '/settings/:path*',
   ],
 };
