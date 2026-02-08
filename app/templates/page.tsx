@@ -49,7 +49,7 @@ const TEMPLATES = [
 ];
 
 export default async function TemplatesPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {

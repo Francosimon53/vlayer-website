@@ -2,12 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function getSupabaseAdmin() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+    process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  );
+}
 
 export async function POST(req: NextRequest) {
+  const supabaseAdmin = getSupabaseAdmin();
   const body = await req.text();
   const sig = req.headers.get('stripe-signature')!;
 
@@ -22,14 +25,14 @@ export async function POST(req: NextRequest) {
   switch (event.type) {
     case 'checkout.session.completed': {
       const session = event.data.object;
-      const userId = session.metadata?.supabase_user_id ||
-                     session.subscription_data?.metadata?.supabase_user_id;
+      const userId = session.metadata?.supabase_user_id;
 
       if (userId) {
         await supabaseAdmin.from('profiles').update({
           plan: 'pro',
-          stripe_subscription_id: session.subscription,
-          stripe_customer_id: session.customer,
+          stripe_subscription_id: session.subscription as string,
+          stripe_customer_id: session.customer as string,
+          subscription_status: 'trialing',
           trial_ends_at: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
         }).eq('id', userId);
       }
@@ -37,7 +40,7 @@ export async function POST(req: NextRequest) {
     }
 
     case 'customer.subscription.updated': {
-      const subscription = event.data.object;
+      const subscription = event.data.object as any;
       const userId = subscription.metadata?.supabase_user_id;
 
       if (userId) {
@@ -45,7 +48,9 @@ export async function POST(req: NextRequest) {
         await supabaseAdmin.from('profiles').update({
           plan: isActive ? 'pro' : 'free',
           subscription_status: subscription.status,
-          current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+          current_period_end: subscription.current_period_end
+            ? new Date(subscription.current_period_end * 1000).toISOString()
+            : null,
         }).eq('id', userId);
       }
       break;
@@ -87,7 +92,3 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ received: true });
 }
-
-export const config = {
-  api: { bodyParser: false },
-};
