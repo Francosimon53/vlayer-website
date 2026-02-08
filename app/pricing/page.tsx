@@ -1,13 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createClient } from '@/lib/supabase/client';
 import { PLANS } from '@/lib/stripe';
 
 export default function PricingPage() {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const supabase = createClient();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+      setAuthChecked(true);
+    });
+  }, []);
 
   const handleUpgrade = async () => {
+    // Check if user is authenticated
+    if (!authChecked) {
+      return; // Wait for auth check
+    }
+
+    if (!user) {
+      window.location.href = '/login?redirect=/pricing&action=trial';
+      return;
+    }
+
     setLoading(true);
     try {
       const res = await fetch('/api/stripe/checkout', {

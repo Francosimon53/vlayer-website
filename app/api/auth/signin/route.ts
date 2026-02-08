@@ -5,6 +5,7 @@ export async function POST(req: NextRequest) {
   const formData = await req.formData();
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
+  const redirect = formData.get('redirect') as string | null;
 
   const supabase = await createClient();
 
@@ -14,8 +15,25 @@ export async function POST(req: NextRequest) {
   });
 
   if (error) {
-    return NextResponse.redirect(new URL('/login?error=Invalid credentials', req.url));
+    const loginUrl = new URL('/login', req.url);
+    loginUrl.searchParams.set('error', 'Invalid credentials');
+    if (redirect) loginUrl.searchParams.set('redirect', redirect);
+    return NextResponse.redirect(loginUrl);
   }
 
-  return NextResponse.redirect(new URL('/dashboard', req.url));
+  // Validate redirect URL to prevent open redirects
+  let redirectUrl = '/dashboard';
+  if (redirect) {
+    try {
+      const url = new URL(redirect, req.url);
+      // Only allow internal redirects
+      if (url.origin === req.nextUrl.origin) {
+        redirectUrl = redirect;
+      }
+    } catch {
+      // Invalid URL, use default
+    }
+  }
+
+  return NextResponse.redirect(new URL(redirectUrl, req.url));
 }
