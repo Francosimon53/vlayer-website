@@ -12,7 +12,7 @@ const plans = [
       'JSON & Markdown reports',
     ],
     cta: 'Get Started',
-    ctaLink: '#get-started',
+    ctaLink: 'https://app.vlayer.app/signup',
     highlighted: false,
   },
   {
@@ -29,7 +29,7 @@ const plans = [
       'HTML reports with trends',
     ],
     cta: 'Start Free Trial',
-    ctaLink: '#get-started',
+    ctaLink: 'https://app.vlayer.app/signup',
     highlighted: true,
   },
   {

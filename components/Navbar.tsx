@@ -46,7 +46,7 @@ export default function Navbar() {
           {/* CTA Button */}
           <div className="hidden md:block">
             <a
-              href="#get-started"
+              href="https://app.vlayer.app/signup"
               className="bg-[#0066CC] text-white px-5 py-2.5 rounded-lg font-medium hover:bg-[#0052A3] transition-colors"
             >
               Get Started
@@ -84,7 +84,7 @@ export default function Navbar() {
               <a href="https://docs.vlayer.app" className="text-gray-600 hover:text-[#0066CC]">Docs</a>
               <a href="https://github.com/vlayer" className="text-gray-600 hover:text-[#0066CC]">GitHub</a>
               <a
-                href="#get-started"
+                href="https://app.vlayer.app/signup"
                 className="bg-[#0066CC] text-white px-5 py-2.5 rounded-lg font-medium text-center"
               >
                 Get Started

@@ -54,7 +54,7 @@ export default function Hero() {
               Try in Browser
             </a>
             <a
-              href="#get-started"
+              href="https://app.vlayer.app/signup"
               className="bg-[#0066CC] text-white px-8 py-3.5 rounded-lg font-medium hover:bg-[#0052A3] transition-colors text-lg"
             >
               Get Started Free
