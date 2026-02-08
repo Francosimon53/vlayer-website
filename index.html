@@ -4,8 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>vlayer - HIPAA Compliance on Every Commit | Healthcare Code Scanner</title>
-  <meta name="description" content="163+ detection rules that catch PHI exposures, missing encryption, and access control gaps before they reach production. HIPAA 2026 ready.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%230ea5e9'/><stop offset='100%' style='stop-color:%2306b6d4'/></linearGradient></defs><rect width='100' height='100' rx='20' fill='url(%23g)'/><text x='50' y='70' font-family='monospace' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>vl</text></svg>">
+  <meta name="description" content="163+ detection rules that catch PHI exposures, missing encryption, and access control gaps before they reach production. HIPAA 2026 ready - 15/15 requirements covered.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%233b82f6'/><stop offset='100%' style='stop-color:%2306b6d4'/></linearGradient></defs><rect width='100' height='100' rx='20' fill='url(%23g)'/><text x='50' y='70' font-family='JetBrains Mono,monospace' font-size='60' font-weight='bold' fill='white' text-anchor='middle'>vl</text></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -15,31 +19,60 @@
     }
 
     :root {
-      --bg-primary: #0a0f1e;
-      --bg-secondary: #111827;
-      --bg-tertiary: #1f2937;
+      --bg-dark: #0a0a0f;
+      --bg-card: #131318;
+      --bg-hover: #1a1a20;
       --text-primary: #ffffff;
-      --text-secondary: #9ca3af;
-      --text-tertiary: #6b7280;
-      --accent-blue: #0ea5e9;
-      --accent-cyan: #06b6d4;
-      --accent-green: #10b981;
-      --accent-purple: #8b5cf6;
-      --border-color: #374151;
+      --text-secondary: #a0a0ab;
+      --text-muted: #6b6b76;
+      --blue: #3b82f6;
+      --cyan: #06b6d4;
+      --green: #10b981;
+      --red: #ef4444;
+      --amber: #f59e0b;
+      --purple: #8b5cf6;
+      --border: #2a2a32;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: var(--bg-primary);
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-dark);
       color: var(--text-primary);
       line-height: 1.6;
       overflow-x: hidden;
+      position: relative;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 24px;
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 60 0 L 0 0 0 60' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23grid)'/%3E%3C/svg%3E");
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
     }
 
     /* Navbar */
@@ -48,52 +81,36 @@
       top: 0;
       left: 0;
       right: 0;
-      z-index: 1000;
-      background: rgba(10, 15, 30, 0.8);
+      background: rgba(10, 10, 15, 0.8);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: 1rem 0;
     }
 
     .nav-container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 16px 24px;
+      padding: 0 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
     .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       text-decoration: none;
-      color: var(--text-primary);
-    }
-
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Courier New', monospace;
-      font-weight: bold;
-      font-size: 18px;
-      color: white;
-    }
-
-    .logo-text {
-      font-family: 'Courier New', monospace;
-      font-size: 24px;
-      font-weight: 600;
     }
 
     .nav-links {
       display: flex;
-      gap: 32px;
+      gap: 2rem;
       align-items: center;
       list-style: none;
     }
@@ -101,7 +118,7 @@
     .nav-links a {
       color: var(--text-secondary);
       text-decoration: none;
-      font-size: 15px;
+      font-weight: 500;
       transition: color 0.2s;
     }
 
@@ -109,118 +126,101 @@
       color: var(--text-primary);
     }
 
-    .nav-ctas {
+    .nav-cta {
       display: flex;
-      gap: 12px;
-      align-items: center;
+      gap: 1rem;
     }
 
     .btn {
-      padding: 10px 20px;
-      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
       text-decoration: none;
-      font-size: 15px;
-      font-weight: 500;
       transition: all 0.2s;
-      display: inline-block;
       border: none;
       cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      display: inline-block;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
       color: white;
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(6, 182, 212, 0.3);
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
     }
 
-    .btn-ghost {
+    .btn-secondary {
       background: transparent;
+      border: 1px solid var(--border);
       color: var(--text-primary);
-      border: 1px solid var(--border-color);
     }
 
-    .btn-ghost:hover {
-      border-color: var(--accent-blue);
-      background: rgba(14, 165, 233, 0.1);
-    }
-
-    .mobile-menu-btn {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--text-primary);
-      font-size: 24px;
-      cursor: pointer;
+    .btn-secondary:hover {
+      background: var(--bg-hover);
+      border-color: var(--blue);
     }
 
     /* Hero */
     .hero {
-      padding: 160px 0 80px;
+      padding: 10rem 2rem 6rem;
       text-align: center;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: rgba(16, 185, 129, 0.1);
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1));
       border: 1px solid rgba(16, 185, 129, 0.3);
-      color: var(--accent-green);
-      padding: 8px 16px;
-      border-radius: 24px;
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 24px;
+      border-radius: 2rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--green);
+      margin-bottom: 2rem;
     }
 
-    h1 {
-      font-size: 64px;
-      font-weight: 700;
+    .hero h1 {
+      font-size: 4rem;
+      font-weight: 800;
       line-height: 1.1;
-      margin-bottom: 24px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
     .hero p {
-      font-size: 20px;
+      font-size: 1.25rem;
       color: var(--text-secondary);
       max-width: 700px;
-      margin: 0 auto 32px;
-      line-height: 1.7;
+      margin: 0 auto 2.5rem;
     }
 
-    .hero-ctas {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      margin-bottom: 64px;
-    }
-
-    /* Terminal Demo */
     .terminal {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
       overflow: hidden;
-      max-width: 900px;
-      margin: 0 auto;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      max-width: 800px;
+      margin: 3rem auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
     }
 
     .terminal-header {
-      background: #1f2937;
-      padding: 12px 16px;
+      background: var(--bg-hover);
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      gap: 8px;
-      border-bottom: 1px solid var(--border-color);
+      gap: 0.5rem;
     }
 
     .terminal-dot {
@@ -229,110 +229,116 @@
       border-radius: 50%;
     }
 
-    .terminal-dot.red { background: #ef4444; }
-    .terminal-dot.yellow { background: #f59e0b; }
-    .terminal-dot.green { background: #10b981; }
-
     .terminal-body {
-      padding: 24px;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
+      padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem;
+      text-align: left;
       line-height: 1.8;
-      color: #e5e7eb;
+      color: var(--text-secondary);
     }
 
-    .terminal-line {
-      margin-bottom: 4px;
+    .terminal-body .command {
+      color: var(--cyan);
     }
 
-    .terminal-prompt {
-      color: var(--accent-cyan);
+    .terminal-body .success {
+      color: var(--green);
     }
 
-    .terminal-success {
-      color: var(--accent-green);
+    .terminal-body .error {
+      color: var(--red);
     }
 
-    .terminal-warning {
-      color: #f59e0b;
+    .terminal-body .warning {
+      color: var(--amber);
     }
 
-    .terminal-error {
-      color: #ef4444;
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
     }
 
     /* Features */
-    .features {
-      padding: 120px 0;
-      background: var(--bg-secondary);
+    .section {
+      padding: 6rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
     .section-header {
       text-align: center;
-      margin-bottom: 64px;
-    }
-
-    .section-badge {
-      display: inline-block;
-      background: rgba(14, 165, 233, 0.1);
-      border: 1px solid rgba(14, 165, 233, 0.3);
-      color: var(--accent-blue);
-      padding: 6px 12px;
-      border-radius: 16px;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      max-width: 800px;
+      margin: 0 auto 4rem;
     }
 
     .section-header h2 {
-      font-size: 48px;
-      margin-bottom: 16px;
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
     }
 
     .section-header p {
-      font-size: 20px;
+      font-size: 1.25rem;
       color: var(--text-secondary);
-      max-width: 600px;
-      margin: 0 auto;
     }
 
-    .features-grid {
+    .feature-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 32px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
     }
 
     .feature-card {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 32px;
+      padding: 2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
       transition: all 0.3s;
     }
 
     .feature-card:hover {
-      border-color: var(--accent-blue);
       transform: translateY(-4px);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+      border-color: var(--blue);
+      box-shadow: 0 20px 40px rgba(59, 130, 246, 0.1);
     }
 
     .feature-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      margin-bottom: 20px;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
     }
 
     .feature-card h3 {
-      font-size: 22px;
-      margin-bottom: 12px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
     }
 
     .feature-card p {
@@ -340,112 +346,58 @@
       line-height: 1.7;
     }
 
-    /* HIPAA 2026 Section */
-    .hipaa-2026 {
-      padding: 120px 0;
-      background: linear-gradient(135deg, #0a0f1e 0%, #1a1f3a 100%);
+    /* HIPAA 2026 */
+    .hipaa-section {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(245, 158, 11, 0.05));
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 1rem;
+      padding: 4rem;
+      margin: 4rem auto;
+      max-width: 1200px;
     }
 
-    .hipaa-grid {
+    .requirements-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      align-items: center;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2rem;
     }
 
-    .hipaa-content h2 {
-      font-size: 48px;
-      margin-bottom: 24px;
-    }
-
-    .hipaa-content p {
-      font-size: 18px;
-      color: var(--text-secondary);
-      margin-bottom: 32px;
-      line-height: 1.7;
-    }
-
-    .requirement-list {
-      list-style: none;
-      margin-bottom: 32px;
-    }
-
-    .requirement-list li {
+    .requirement-item {
       display: flex;
-      align-items: start;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border-color);
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 0.5rem;
     }
 
-    .requirement-list li:last-child {
-      border-bottom: none;
-    }
-
-    .check-icon {
-      color: var(--accent-green);
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-
-    .requirement-list span {
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-
-    .hipaa-stats {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
-    }
-
-    .stat-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 24px;
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 48px;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
-    }
-
-    .stat-label {
-      color: var(--text-secondary);
-      font-size: 14px;
+    .checkmark {
+      color: var(--green);
+      font-size: 1.25rem;
     }
 
     /* Pricing */
-    .pricing {
-      padding: 120px 0;
-      background: var(--bg-primary);
-    }
-
     .pricing-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 32px;
-      max-width: 1000px;
-      margin: 0 auto;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
     }
 
     .pricing-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 40px;
+      padding: 2.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
       position: relative;
     }
 
     .pricing-card.featured {
-      border-color: var(--accent-blue);
-      box-shadow: 0 0 40px rgba(14, 165, 233, 0.2);
+      border-color: var(--blue);
+      box-shadow: 0 20px 60px rgba(59, 130, 246, 0.2);
+      transform: scale(1.05);
     }
 
     .pricing-badge {
@@ -453,612 +405,443 @@
       top: -12px;
       left: 50%;
       transform: translateX(-50%);
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-      color: white;
-      padding: 4px 16px;
-      border-radius: 16px;
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .pricing-card h3 {
-      font-size: 24px;
-      margin-bottom: 8px;
-    }
-
-    .pricing-card .price {
-      font-size: 48px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      padding: 0.25rem 1rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      margin: 16px 0;
+      color: white;
     }
 
-    .pricing-card .price span {
-      font-size: 18px;
-      color: var(--text-secondary);
-      font-weight: 400;
+    .pricing-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
     }
 
-    .pricing-card .description {
+    .pricing-price {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .pricing-period {
       color: var(--text-secondary);
-      margin-bottom: 24px;
-      font-size: 15px;
+      margin-bottom: 2rem;
     }
 
     .pricing-features {
       list-style: none;
-      margin-bottom: 32px;
+      margin-bottom: 2rem;
     }
 
     .pricing-features li {
-      padding: 12px 0;
+      padding: 0.75rem 0;
       display: flex;
       align-items: center;
-      gap: 12px;
-      color: var(--text-secondary);
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border);
     }
 
-    .pricing-features .check {
-      color: var(--accent-green);
-      font-size: 18px;
-    }
-
-    .pricing-card .btn {
-      width: 100%;
-      text-align: center;
-    }
-
-    /* How It Works */
-    .how-it-works {
-      padding: 120px 0;
-      background: var(--bg-secondary);
-    }
-
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 48px;
-      margin-top: 64px;
-    }
-
-    .step {
-      text-align: center;
-      position: relative;
-    }
-
-    .step-number {
-      width: 64px;
-      height: 64px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      font-weight: 700;
-      margin: 0 auto 24px;
-    }
-
-    .step h3 {
-      font-size: 22px;
-      margin-bottom: 12px;
-    }
-
-    .step p {
-      color: var(--text-secondary);
-      line-height: 1.7;
+    .pricing-features li:last-child {
+      border-bottom: none;
     }
 
     /* Footer */
     footer {
-      background: var(--bg-tertiary);
-      border-top: 1px solid var(--border-color);
-      padding: 64px 0 32px;
+      border-top: 1px solid var(--border);
+      padding: 4rem 2rem 2rem;
+      margin-top: 6rem;
     }
 
     .footer-grid {
       display: grid;
       grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 48px;
-      margin-bottom: 48px;
+      gap: 4rem;
+      max-width: 1400px;
+      margin: 0 auto 3rem;
     }
 
-    .footer-brand {
-      max-width: 300px;
+    .footer-column h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
     }
 
-    .footer-brand p {
-      color: var(--text-secondary);
-      margin: 16px 0;
-      line-height: 1.7;
-    }
-
-    .footer-links h4 {
-      font-size: 16px;
-      margin-bottom: 16px;
-    }
-
-    .footer-links ul {
+    .footer-column ul {
       list-style: none;
     }
 
-    .footer-links ul li {
-      margin-bottom: 12px;
+    .footer-column ul li {
+      margin-bottom: 0.75rem;
     }
 
-    .footer-links a {
+    .footer-column a {
       color: var(--text-secondary);
       text-decoration: none;
       transition: color 0.2s;
     }
 
-    .footer-links a:hover {
+    .footer-column a:hover {
       color: var(--text-primary);
     }
 
     .footer-bottom {
-      border-top: 1px solid var(--border-color);
-      padding-top: 32px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: var(--text-tertiary);
-      font-size: 14px;
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
-    /* Mobile Responsive */
+    /* Responsive */
     @media (max-width: 768px) {
-      .nav-links, .nav-ctas {
+      .nav-links, .nav-cta {
         display: none;
       }
 
-      .mobile-menu-btn {
-        display: block;
+      .hero h1 {
+        font-size: 2.5rem;
       }
 
-      h1 {
-        font-size: 40px;
-      }
-
-      .hero p {
-        font-size: 18px;
-      }
-
-      .hero-ctas {
-        flex-direction: column;
-      }
-
-      .section-header h2 {
-        font-size: 36px;
-      }
-
-      .features-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hipaa-grid {
-        grid-template-columns: 1fr;
-        gap: 32px;
-      }
-
-      .hipaa-content h2 {
-        font-size: 36px;
-      }
-
+      .stats,
+      .feature-grid,
+      .requirements-grid,
       .pricing-grid {
         grid-template-columns: 1fr;
       }
 
       .footer-grid {
         grid-template-columns: 1fr;
-        gap: 32px;
+        gap: 2rem;
       }
 
-      .footer-bottom {
-        flex-direction: column;
-        gap: 16px;
-        text-align: center;
+      .pricing-card.featured {
+        transform: scale(1);
       }
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav>
-    <div class="nav-container">
-      <a href="#" class="logo">
-        <div class="logo-icon">vl</div>
-        <span class="logo-text">vlayer</span>
-      </a>
-
-      <ul class="nav-links">
-        <li><a href="#features">Features</a></li>
-        <li><a href="#hipaa-2026">HIPAA 2026</a></li>
-        <li><a href="#pricing">Pricing</a></li>
-        <li><a href="https://github.com/Francosimon53/verification-layer" target="_blank">GitHub</a></li>
-        <li><a href="https://docs.vlayer.app" target="_blank">Docs</a></li>
-      </ul>
-
-      <div class="nav-ctas">
-        <a href="https://app.vlayer.app" class="btn btn-ghost">Dashboard</a>
-        <a href="#pricing" class="btn btn-primary">Get Started</a>
+  <div class="content">
+    <!-- Navbar -->
+    <nav>
+      <div class="nav-container">
+        <a href="/" class="logo">vlayer</a>
+        <ul class="nav-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#hipaa-2026">HIPAA 2026</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="https://github.com/Francosimon53/verification-layer">GitHub</a></li>
+          <li><a href="https://docs.vlayer.app">Docs</a></li>
+        </ul>
+        <div class="nav-cta">
+          <a href="https://app.vlayer.app" class="btn btn-secondary">Dashboard</a>
+          <a href="https://app.vlayer.app/pricing" class="btn btn-primary">Get Started</a>
+        </div>
       </div>
+    </nav>
 
-      <button class="mobile-menu-btn">☰</button>
-    </div>
-  </nav>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container">
+    <!-- Hero -->
+    <section class="hero">
       <div class="badge">
-        ✓ HIPAA 2026 Ready — 15/15 new requirements covered
+        <span class="checkmark">✓</span>
+        HIPAA 2026 Ready — 15/15 Requirements
+      </div>
+      <h1>HIPAA compliance<br/>on every commit</h1>
+      <p>163+ detection rules that catch PHI exposures, missing encryption, and access control gaps before they reach production. Built for healthcare teams shipping fast.</p>
+
+      <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 3rem;">
+        <a href="https://app.vlayer.app/pricing" class="btn btn-primary">Start Free Trial</a>
+        <a href="https://github.com/Francosimon53/verification-layer" class="btn btn-secondary">View on GitHub</a>
       </div>
 
-      <h1>
-        HIPAA compliance<br>
-        on every commit
-      </h1>
-
-      <p>
-        163+ detection rules that catch PHI exposures, missing encryption, and access control gaps before they reach production. Built by BCBAs who understand healthcare.
-      </p>
-
-      <div class="hero-ctas">
-        <a href="https://github.com/Francosimon53/verification-layer" class="btn btn-primary">⚡ Install Free</a>
-        <a href="#how-it-works" class="btn btn-ghost">See How It Works →</a>
-      </div>
-
-      <!-- Terminal Demo -->
-      <div class="terminal">
+      <div class="terminal fade-in">
         <div class="terminal-header">
-          <div class="terminal-dot red"></div>
-          <div class="terminal-dot yellow"></div>
-          <div class="terminal-dot green"></div>
+          <div class="terminal-dot" style="background: #ef4444;"></div>
+          <div class="terminal-dot" style="background: #f59e0b;"></div>
+          <div class="terminal-dot" style="background: #10b981;"></div>
         </div>
         <div class="terminal-body">
-          <div class="terminal-line">
-            <span class="terminal-prompt">$</span> npx vlayer scan ./src
-          </div>
-          <div class="terminal-line">🔍 Scanning 42 files...</div>
-          <div class="terminal-line terminal-success">✓ Scan complete. Found 3 issues.</div>
-          <div class="terminal-line">&nbsp;</div>
-          <div class="terminal-line terminal-error">❌ CRITICAL (1):</div>
-          <div class="terminal-line">  └─ PHI-001: SSN detected in plaintext</div>
-          <div class="terminal-line">     src/api/patients.ts:127</div>
-          <div class="terminal-line">&nbsp;</div>
-          <div class="terminal-line terminal-warning">⚠️  HIGH (2):</div>
-          <div class="terminal-line">  ├─ ENCRYPT-002: Missing TLS 1.2+ enforcement</div>
-          <div class="terminal-line">  │  src/config/server.ts:45</div>
-          <div class="terminal-line">  └─ AUDIT-003: No logging on PHI access</div>
-          <div class="terminal-line">     src/controllers/records.ts:89</div>
-          <div class="terminal-line">&nbsp;</div>
-          <div class="terminal-line terminal-success">📊 Compliance Score: 87/100</div>
-          <div class="terminal-line">&nbsp;</div>
-          <div class="terminal-line">Run <span class="terminal-prompt">vlayer scan --fix</span> to auto-remediate</div>
+<span class="command">$ npx vlayer scan ./src</span>
+
+<span class="success">✓ Scanning 47 files across 12 categories...</span>
+
+<span class="error">❌ CRITICAL: PHI-001</span>
+  SSN pattern detected in plaintext
+  <span style="color: #6b7280;">src/models/patient.ts:23</span>
+
+<span class="warning">⚠️  WARNING: ENC-003</span>
+  Database connection missing TLS
+  <span style="color: #6b7280;">src/config/db.ts:15</span>
+
+<span style="color: #6b7280;">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+
+<span class="success">✓ Scan complete</span>
+  <span style="color: #fff;">Compliance Score: <span style="color: #ef4444; font-weight: 700;">67/100</span></span>
+  <span style="color: #6b7280;">2 critical • 5 warnings • 12 info</span>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Features -->
-  <section id="features" class="features">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-badge">Features</span>
-        <h2>Built for healthcare developers</h2>
-        <p>Everything you need to ship HIPAA-compliant code with confidence</p>
+    <!-- Stats -->
+    <div class="stats fade-in">
+      <div class="stat-card">
+        <div class="stat-number">163+</div>
+        <div class="stat-label">Detection Rules</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">15/15</div>
+        <div class="stat-label">HIPAA 2026 NPRM</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">45+</div>
+        <div class="stat-label">Training Questions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">5</div>
+        <div class="stat-label">HIPAA Templates</div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <section id="features" class="section">
+      <div class="section-header fade-in">
+        <h2>Built for healthcare dev teams</h2>
+        <p>Everything you need to ship HIPAA-compliant code, from local scans to audit reports</p>
       </div>
 
-      <div class="features-grid">
-        <div class="feature-card">
+      <div class="feature-grid">
+        <div class="feature-card fade-in">
           <div class="feature-icon">🔍</div>
-          <h3>163+ Detection Rules</h3>
-          <p>Catches PHI in logs, URLs, localStorage, weak crypto (MD5/DES), missing MFA, SQL injection, and 157 more violations before they hit production.</p>
+          <h3>Smart Scanner</h3>
+          <p>163+ rules across 12 categories detect PHI exposures, weak encryption, missing audit logs, and access control gaps in your codebase.</p>
         </div>
 
-        <div class="feature-card">
-          <div class="feature-icon">🤖</div>
-          <h3>AI-Powered Scanning</h3>
-          <p>Claude AI analyzes your code for context-aware HIPAA violations that static analysis misses. Understands healthcare workflows.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3>Pre-Commit Hooks</h3>
-          <p>Block commits with critical HIPAA findings. Prevent PHI leaks before they enter your codebase. Zero-config setup.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🔧</div>
-          <h3>Auto-Fix & Remediation</h3>
-          <p>One-click fixes for 80+ violation types. Generate audit logs, add encryption, sanitize PHI — automatically.</p>
-        </div>
-
-        <div class="feature-card">
+        <div class="feature-card fade-in">
           <div class="feature-icon">📊</div>
-          <h3>Compliance Dashboard</h3>
-          <p>Real-time compliance scores, historical trending, and executive-ready reports. Track progress across teams.</p>
+          <h3>Compliance Score</h3>
+          <p>0-100 score that tracks your HIPAA readiness over time. See exactly where you stand and what to fix next.</p>
         </div>
 
-        <div class="feature-card">
-          <div class="feature-icon">📚</div>
-          <h3>Developer Training</h3>
-          <p>Interactive HIPAA security training with 45+ questions and certification. Onboard new devs in 30 minutes.</p>
+        <div class="feature-card fade-in">
+          <div class="feature-icon">⚙️</div>
+          <h3>CI/CD Integration</h3>
+          <p>GitHub Actions, pre-commit hooks, and PR comments. Block non-compliant code before it merges.</p>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">📄</div>
+          <h3>HIPAA Templates</h3>
+          <p>Pre-built policies and procedures: IRP, BAA, NPP, Security Officer role, Physical Safeguards. Ready to customize.</p>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">🎓</div>
+          <h3>Training Module</h3>
+          <p>10 modules, 45+ questions. SHA-256 verifiable certificates. Turn your devs into HIPAA-aware engineers.</p>
+        </div>
+
+        <div class="feature-card fade-in">
+          <div class="feature-icon">📑</div>
+          <h3>PDF Reports</h3>
+          <p>Executive summaries and technical findings for auditors. Export historical scan data for compliance reviews.</p>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- HIPAA 2026 -->
-  <section id="hipaa-2026" class="hipaa-2026">
-    <div class="container">
-      <div class="hipaa-grid">
-        <div class="hipaa-content">
-          <span class="section-badge">HIPAA 2026 NPRM</span>
-          <h2>Ready for the new HIPAA Security Rule</h2>
-          <p>
-            The 2026 NPRM introduces 15 new requirements that most healthcare orgs will struggle to meet. vlayer covers all of them out of the box.
+    <!-- HIPAA 2026 -->
+    <section id="hipaa-2026" class="section">
+      <div class="hipaa-section fade-in">
+        <div style="text-align: center; margin-bottom: 3rem;">
+          <div class="badge" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(245, 158, 11, 0.1)); border-color: rgba(239, 68, 68, 0.3); color: var(--red);">
+            ⚠️ Compliance Deadline: HIPAA 2026 NPRM
+          </div>
+          <h2 style="font-size: 3rem; font-weight: 800; margin-top: 1rem;">Ready for HIPAA 2026</h2>
+          <p style="color: var(--text-secondary); font-size: 1.25rem; max-width: 700px; margin: 1rem auto;">
+            The new HIPAA Security Rule adds 15 cybersecurity requirements. vlayer covers all of them.
           </p>
-
-          <ul class="requirement-list">
-            <li>
-              <span class="check-icon">✓</span>
-              <span><strong>Multi-Factor Authentication:</strong> Enforce MFA on all ePHI access points</span>
-            </li>
-            <li>
-              <span class="check-icon">✓</span>
-              <span><strong>Encryption Everywhere:</strong> AES-256 at rest, TLS 1.3 in transit</span>
-            </li>
-            <li>
-              <span class="check-icon">✓</span>
-              <span><strong>Network Segmentation:</strong> Detect missing security boundaries</span>
-            </li>
-            <li>
-              <span class="check-icon">✓</span>
-              <span><strong>Vulnerability Scanning:</strong> Integrated npm audit + OWASP checks</span>
-            </li>
-            <li>
-              <span class="check-icon">✓</span>
-              <span><strong>Penetration Testing:</strong> Guides and checklists for annual tests</span>
-            </li>
-            <li>
-              <span class="check-icon">✓</span>
-              <span><strong>Asset Inventory:</strong> Auto-discover ePHI flows and storage</span>
-            </li>
-          </ul>
-
-          <a href="https://docs.vlayer.app/hipaa-2026" class="btn btn-primary">View Full NPRM Coverage →</a>
         </div>
 
-        <div class="hipaa-stats">
-          <div class="stat-card">
-            <div class="stat-number">15/15</div>
-            <div class="stat-label">NPRM Requirements</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">100%</div>
-            <div class="stat-label">Security Rule Coverage</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">&lt;5min</div>
-            <div class="stat-label">Average Scan Time</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number">$0</div>
-            <div class="stat-label">For Open Source</div>
+        <div class="requirements-grid">
+          <div class="requirement-item"><span class="checkmark">✓</span> Network Segmentation</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Encryption Standards</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Multi-Factor Auth</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Audit Log Monitoring</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Incident Response</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Vulnerability Scanning</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Asset Inventory</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Access Controls</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Data Minimization</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Secure Configuration</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Patch Management</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Risk Assessments</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Business Continuity</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Security Training</div>
+          <div class="requirement-item"><span class="checkmark">✓</span> Third-Party Risk</div>
+        </div>
+
+        <div style="margin-top: 3rem; padding: 2rem; background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 0.75rem;">
+          <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--red);">💰 Non-Compliance Costs</h3>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 1.5rem;">
+            <div>
+              <div style="font-size: 2rem; font-weight: 800; color: var(--red);">$2M</div>
+              <div style="color: var(--text-secondary); font-size: 0.875rem;">Average breach cost</div>
+            </div>
+            <div>
+              <div style="font-size: 2rem; font-weight: 800; color: var(--amber);">$100-$50K</div>
+              <div style="color: var(--text-secondary); font-size: 0.875rem;">Per violation (Tier 1-4)</div>
+            </div>
+            <div>
+              <div style="font-size: 2rem; font-weight: 800; color: var(--amber);">$1.5M</div>
+              <div style="color: var(--text-secondary); font-size: 0.875rem;">Annual cap per violation</div>
+            </div>
+            <div>
+              <div style="font-size: 2rem; font-weight: 800; color: var(--red);">Criminal</div>
+              <div style="color: var(--text-secondary); font-size: 0.875rem;">$250K + 10 years jail</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Pricing -->
-  <section id="pricing" class="pricing">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-badge">Pricing</span>
-        <h2>Start free, scale as you grow</h2>
-        <p>All plans include the full rule set and HIPAA 2026 coverage</p>
+    <!-- Pricing -->
+    <section id="pricing" class="section">
+      <div class="section-header fade-in">
+        <h2>Simple, transparent pricing</h2>
+        <p>Start free. Scale as you grow. No hidden fees.</p>
       </div>
 
       <div class="pricing-grid">
-        <!-- Open Source -->
-        <div class="pricing-card">
-          <h3>Open Source</h3>
-          <div class="price">$0<span>/forever</span></div>
-          <p class="description">Perfect for individual developers and open source projects</p>
-
+        <div class="pricing-card fade-in">
+          <div class="pricing-name">Open Source</div>
+          <div class="pricing-price">$0</div>
+          <div class="pricing-period">forever</div>
           <ul class="pricing-features">
-            <li><span class="check">✓</span> 163+ detection rules</li>
-            <li><span class="check">✓</span> CLI scanner</li>
-            <li><span class="check">✓</span> Pre-commit hooks</li>
-            <li><span class="check">✓</span> Local scans only</li>
-            <li><span class="check">✓</span> Community support</li>
+            <li><span class="checkmark">✓</span> 163+ detection rules</li>
+            <li><span class="checkmark">✓</span> CLI scanning & reports</li>
+            <li><span class="checkmark">✓</span> Compliance scoring (0-100)</li>
+            <li><span class="checkmark">✓</span> Developer training module</li>
+            <li><span class="checkmark">✓</span> Community support</li>
           </ul>
-
-          <a href="https://github.com/Francosimon53/verification-layer" class="btn btn-ghost">Install via npm →</a>
+          <a href="https://github.com/Francosimon53/verification-layer" class="btn btn-secondary" style="width: 100%;">Get Started</a>
         </div>
 
-        <!-- Team -->
-        <div class="pricing-card featured">
-          <div class="pricing-badge">Most Popular</div>
-          <h3>Team</h3>
-          <div class="price">$299<span>/month</span></div>
-          <p class="description">For teams building HIPAA-compliant healthcare apps</p>
-
+        <div class="pricing-card featured fade-in">
+          <div class="pricing-badge">MOST POPULAR</div>
+          <div class="pricing-name">Pro</div>
+          <div class="pricing-price">$49</div>
+          <div class="pricing-period">per month • 14-day free trial</div>
           <ul class="pricing-features">
-            <li><span class="check">✓</span> Everything in Open Source</li>
-            <li><span class="check">✓</span> Dashboard + analytics</li>
-            <li><span class="check">✓</span> Historical tracking</li>
-            <li><span class="check">✓</span> Auto-fix suggestions</li>
-            <li><span class="check">✓</span> GitHub integration</li>
-            <li><span class="check">✓</span> Priority support</li>
-            <li><span class="check">✓</span> Up to 10 users</li>
+            <li><span class="checkmark">✓</span> Everything in Open Source</li>
+            <li><span class="checkmark">✓</span> GitHub App with PR comments</li>
+            <li><span class="checkmark">✓</span> Pre-commit hooks</li>
+            <li><span class="checkmark">✓</span> Historical scan dashboard</li>
+            <li><span class="checkmark">✓</span> HIPAA document templates</li>
+            <li><span class="checkmark">✓</span> Team compliance tracking (10 users)</li>
+            <li><span class="checkmark">✓</span> PDF audit reports</li>
+            <li><span class="checkmark">✓</span> Email support (48h SLA)</li>
           </ul>
-
-          <a href="https://app.vlayer.app/signup?plan=team" class="btn btn-primary">Start Free Trial →</a>
+          <a href="https://app.vlayer.app/pricing" class="btn btn-primary" style="width: 100%;">Start Free Trial</a>
         </div>
 
-        <!-- Enterprise -->
-        <div class="pricing-card">
-          <h3>Enterprise</h3>
-          <div class="price">Custom</div>
-          <p class="description">For healthcare organizations requiring advanced compliance</p>
-
+        <div class="pricing-card fade-in">
+          <div class="pricing-name">Enterprise</div>
+          <div class="pricing-price">Custom</div>
+          <div class="pricing-period">contact sales</div>
           <ul class="pricing-features">
-            <li><span class="check">✓</span> Everything in Team</li>
-            <li><span class="check">✓</span> AI-powered scanning</li>
-            <li><span class="check">✓</span> Custom rules engine</li>
-            <li><span class="check">✓</span> SOC 2 compliance</li>
-            <li><span class="check">✓</span> BAA included</li>
-            <li><span class="check">✓</span> Dedicated support</li>
-            <li><span class="check">✓</span> Unlimited users</li>
+            <li><span class="checkmark">✓</span> Everything in Pro</li>
+            <li><span class="checkmark">✓</span> Custom detection rules</li>
+            <li><span class="checkmark">✓</span> Self-hosted deployment</li>
+            <li><span class="checkmark">✓</span> SSO & RBAC integration</li>
+            <li><span class="checkmark">✓</span> Dedicated compliance consultant</li>
+            <li><span class="checkmark">✓</span> Custom training modules</li>
+            <li><span class="checkmark">✓</span> Audit preparation support</li>
+            <li><span class="checkmark">✓</span> Priority support (4h SLA)</li>
           </ul>
-
-          <a href="mailto:sales@vlayer.app" class="btn btn-ghost">Contact Sales →</a>
+          <a href="mailto:sales@vlayer.app" class="btn btn-secondary" style="width: 100%;">Contact Sales</a>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- How It Works -->
-  <section id="how-it-works" class="how-it-works">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-badge">How It Works</span>
-        <h2>Ship compliant code in 3 steps</h2>
-        <p>Get up and running in under 5 minutes</p>
-      </div>
-
-      <div class="steps-grid">
-        <div class="step">
-          <div class="step-number">1</div>
-          <h3>Install</h3>
-          <p>Add vlayer to your project with npm or run directly with npx. Zero config required.</p>
-        </div>
-
-        <div class="step">
-          <div class="step-number">2</div>
-          <h3>Scan</h3>
-          <p>Run vlayer scan on your codebase. Get instant feedback on HIPAA violations with line numbers and fix suggestions.</p>
-        </div>
-
-        <div class="step">
-          <div class="step-number">3</div>
-          <h3>Deploy</h3>
-          <p>Add pre-commit hooks to block violations. Connect to dashboard for team analytics. Ship with confidence.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <div class="container">
+    <!-- Footer -->
+    <footer>
       <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="logo">
-            <div class="logo-icon">vl</div>
-            <span class="logo-text">vlayer</span>
-          </div>
-          <p>HIPAA compliance on every commit. Built by healthcare developers for healthcare developers.</p>
+        <div class="footer-column">
+          <div class="logo" style="margin-bottom: 1rem;">vlayer</div>
+          <p style="color: var(--text-secondary); line-height: 1.7;">
+            HIPAA compliance on every commit. Built for healthcare dev teams shipping fast.
+          </p>
         </div>
 
-        <div class="footer-links">
+        <div class="footer-column">
           <h4>Product</h4>
           <ul>
             <li><a href="#features">Features</a></li>
             <li><a href="#pricing">Pricing</a></li>
-            <li><a href="https://docs.vlayer.app">Documentation</a></li>
-            <li><a href="https://play.vlayer.app">Playground</a></li>
+            <li><a href="https://github.com/Francosimon53/verification-layer">GitHub</a></li>
+            <li><a href="https://www.npmjs.com/package/verification-layer">npm</a></li>
           </ul>
         </div>
 
-        <div class="footer-links">
+        <div class="footer-column">
           <h4>Resources</h4>
           <ul>
-            <li><a href="https://docs.vlayer.app/hipaa-2026">HIPAA 2026 Guide</a></li>
-            <li><a href="https://github.com/Francosimon53/verification-layer">GitHub</a></li>
-            <li><a href="https://docs.vlayer.app/templates">Templates</a></li>
-            <li><a href="https://docs.vlayer.app/training">Training</a></li>
+            <li><a href="https://docs.vlayer.app">Documentation</a></li>
+            <li><a href="https://app.vlayer.app">Dashboard</a></li>
+            <li><a href="https://github.com/Francosimon53/verification-layer/issues">Support</a></li>
           </ul>
         </div>
 
-        <div class="footer-links">
+        <div class="footer-column">
           <h4>Company</h4>
           <ul>
-            <li><a href="https://app.vlayer.app/about">About</a></li>
             <li><a href="mailto:hello@vlayer.app">Contact</a></li>
-            <li><a href="https://app.vlayer.app/privacy">Privacy</a></li>
-            <li><a href="https://app.vlayer.app/terms">Terms</a></li>
+            <li><a href="mailto:sales@vlayer.app">Sales</a></li>
+            <li><a href="mailto:enterprise@vlayer.app">Enterprise</a></li>
           </ul>
         </div>
       </div>
 
       <div class="footer-bottom">
-        <div>© 2026 vlayer. Built with care for healthcare.</div>
-        <div>
-          <a href="https://github.com/Francosimon53/verification-layer" style="color: inherit; text-decoration: none;">⭐ Star us on GitHub</a>
-        </div>
+        <p>&copy; 2026 vlayer. Built for healthcare dev teams.</p>
       </div>
-    </div>
-  </footer>
+    </footer>
+  </div>
 
   <script>
-    // Mobile menu toggle
-    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-      const navLinks = document.querySelector('.nav-links');
-      const navCtas = document.querySelector('.nav-ctas');
+    // Fade in animation on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
 
-      if (navLinks.style.display === 'flex') {
-        navLinks.style.display = 'none';
-        navCtas.style.display = 'none';
-      } else {
-        navLinks.style.display = 'flex';
-        navLinks.style.flexDirection = 'column';
-        navLinks.style.position = 'absolute';
-        navLinks.style.top = '70px';
-        navLinks.style.left = '0';
-        navLinks.style.right = '0';
-        navLinks.style.background = 'rgba(10, 15, 30, 0.95)';
-        navLinks.style.padding = '20px';
-        navLinks.style.borderBottom = '1px solid rgba(255, 255, 255, 0.1)';
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
-        navCtas.style.display = 'flex';
-        navCtas.style.flexDirection = 'column';
-        navCtas.style.position = 'absolute';
-        navCtas.style.top = '280px';
-        navCtas.style.left = '0';
-        navCtas.style.right = '0';
-        navCtas.style.background = 'rgba(10, 15, 30, 0.95)';
-        navCtas.style.padding = '20px';
-      }
-    });
-
-    // Smooth scrolling
+    // Smooth scroll for nav links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
-    });
-
-    // Navbar background on scroll
-    window.addEventListener('scroll', function() {
-      const nav = document.querySelector('nav');
-      if (window.scrollY > 50) {
-        nav.style.background = 'rgba(10, 15, 30, 0.95)';
-      } else {
-        nav.style.background = 'rgba(10, 15, 30, 0.8)';
-      }
     });
   </script>
 </body>
