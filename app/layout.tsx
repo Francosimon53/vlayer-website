@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: "vlayer - HIPAA Compliance Scanning for Healthcare Apps",
     description: "Open source CLI tool that scans your codebase for HIPAA compliance issues.",
     type: "website",
-    url: "https://vlayer.dev",
+    url: "https://vlayer.app",
   },
   twitter: {
     card: "summary_large_image",

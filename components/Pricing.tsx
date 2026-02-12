@@ -46,7 +46,7 @@ const plans = [
       'Audit trail & compliance reports',
     ],
     cta: 'Contact Sales',
-    ctaLink: 'mailto:sales@vlayer.dev',
+    ctaLink: 'mailto:sales@vlayer.app',
     highlighted: false,
   },
 ];

@@ -13,7 +13,7 @@ const footerLinks = {
   ],
   Company: [
     { name: 'About', href: '#' },
-    { name: 'Contact', href: 'mailto:hello@vlayer.dev' },
+    { name: 'Contact', href: 'mailto:hello@vlayer.app' },
     { name: 'Careers', href: '#' },
     { name: 'Press Kit', href: '#' },
   ],
