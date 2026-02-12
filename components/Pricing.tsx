@@ -1,53 +1,63 @@
 const plans = [
   {
     name: 'Free',
+    subtitle: 'Open Source',
     price: '$0',
     period: 'forever',
     description: 'For individual developers and open source projects.',
     features: [
-      'CLI tool',
-      '5 compliance categories',
-      'Community support',
-      'Open source',
+      'CLI scanner with 163+ detection rules',
+      '5 HIPAA compliance categories',
       'JSON & Markdown reports',
+      'Community support (GitHub)',
+      'Open source',
     ],
     cta: 'Get Started',
-    ctaLink: 'https://app.vlayer.app/signup',
+    ctaLink: 'https://www.npmjs.com/package/verification-layer',
     highlighted: false,
+    annualNote: null,
   },
   {
     name: 'Pro',
-    price: '$29',
+    subtitle: null,
+    price: '$49',
     period: '/month',
     description: 'For teams building healthcare applications.',
     features: [
       'Everything in Free',
-      'Team dashboard',
-      'Priority support',
+      'Team dashboard with scan history',
+      'GitHub App with automatic PR comments',
+      'Pre-commit hooks',
+      'HIPAA document templates (IRP, BAA, NPP)',
+      'PDF audit-ready reports',
       'Custom rules library',
       'Slack integration',
-      'HTML reports with trends',
+      'Email support (48h SLA)',
     ],
-    cta: 'Start Free Trial',
-    ctaLink: 'https://app.vlayer.app/signup',
+    cta: 'Start 14-Day Free Trial',
+    ctaLink: 'https://app.vlayer.app/signup?plan=pro',
     highlighted: true,
+    annualNote: 'Save 20% with annual billing — $470/year',
   },
   {
     name: 'Enterprise',
+    subtitle: null,
     price: 'Custom',
     period: '',
     description: 'For organizations with advanced security needs.',
     features: [
       'Everything in Pro',
-      'Custom SSO/SAML',
-      'Dedicated support',
-      'SLA guarantee',
-      'On-premise deployment',
+      'Custom SSO/SAML integration',
+      'Self-hosted / on-premise deployment',
+      'Dedicated compliance consultant',
+      'SLA guarantee (4h response)',
       'Audit trail & compliance reports',
+      'Custom training modules',
     ],
     cta: 'Contact Sales',
     ctaLink: 'mailto:sales@vlayer.app',
     highlighted: false,
+    annualNote: null,
   },
 ];
 
@@ -69,7 +79,7 @@ export default function Pricing() {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`rounded-2xl p-8 ${
+              className={`rounded-2xl p-8 flex flex-col ${
                 plan.highlighted
                   ? 'bg-[#0066CC] text-white ring-4 ring-[#0066CC]/20 scale-105'
                   : 'bg-white border border-gray-200'
@@ -81,11 +91,15 @@ export default function Pricing() {
                 </div>
               )}
 
-              <h3 className={`text-2xl font-bold mb-2 ${
+              <h3 className={`text-2xl font-bold mb-1 ${
                 plan.highlighted ? 'text-white' : 'text-gray-900'
               }`}>
                 {plan.name}
               </h3>
+
+              {plan.subtitle && (
+                <p className="text-sm text-gray-500 mb-2">{plan.subtitle}</p>
+              )}
 
               <div className="flex items-baseline gap-1 mb-4">
                 <span className={`text-4xl font-bold ${
@@ -104,11 +118,11 @@ export default function Pricing() {
                 {plan.description}
               </p>
 
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-center gap-2">
+                  <li key={featureIndex} className="flex items-start gap-2">
                     <svg
-                      className={`w-5 h-5 flex-shrink-0 ${
+                      className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
                         plan.highlighted ? 'text-blue-200' : 'text-[#10B981]'
                       }`}
                       fill="none"
@@ -139,6 +153,12 @@ export default function Pricing() {
               >
                 {plan.cta}
               </a>
+
+              {plan.annualNote && (
+                <p className="text-sm text-blue-200 text-center mt-3">
+                  {plan.annualNote}
+                </p>
+              )}
             </div>
           ))}
         </div>
