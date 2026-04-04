@@ -38,7 +38,7 @@ export default function CTA() {
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href="https://github.com/vlayer"
+            href="https://github.com/Francosimon53/verification-layer"
             className="bg-white text-[#0066CC] px-8 py-3.5 rounded-lg font-medium hover:bg-gray-100 transition-colors text-lg flex items-center justify-center gap-2"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -47,7 +47,7 @@ export default function CTA() {
             View on GitHub
           </a>
           <a
-            href="https://github.com/vlayer/docs"
+            href="https://github.com/Francosimon53/verification-layer/docs"
             className="bg-blue-800 text-white px-8 py-3.5 rounded-lg font-medium hover:bg-blue-900 transition-colors text-lg"
           >
             Read Documentation

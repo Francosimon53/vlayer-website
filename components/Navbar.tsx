@@ -41,7 +41,7 @@ export default function Navbar() {
             <a href="https://docs.vlayer.app" className="text-gray-600 hover:text-[#0066CC] transition-colors">
               Docs
             </a>
-            <a href="https://github.com/vlayer" className="text-gray-600 hover:text-[#0066CC] transition-colors">
+            <a href="https://github.com/Francosimon53/verification-layer" className="text-gray-600 hover:text-[#0066CC] transition-colors">
               GitHub
             </a>
           </div>
@@ -86,7 +86,7 @@ export default function Navbar() {
               <a href="/blog" className="text-gray-600 hover:text-[#0066CC]">Blog</a>
               <a href="https://play.vlayer.app" className="text-[#7C3AED] font-medium hover:text-[#6D28D9]">Playground</a>
               <a href="https://docs.vlayer.app" className="text-gray-600 hover:text-[#0066CC]">Docs</a>
-              <a href="https://github.com/vlayer" className="text-gray-600 hover:text-[#0066CC]">GitHub</a>
+              <a href="https://github.com/Francosimon53/verification-layer" className="text-gray-600 hover:text-[#0066CC]">GitHub</a>
               <a
                 href="https://app.vlayer.app/signup"
                 className="bg-[#0066CC] text-white px-5 py-2.5 rounded-lg font-medium text-center"
