@@ -9,7 +9,7 @@ const footerLinks = {
     { name: 'Documentation', href: 'https://github.com/vlayer' },
     { name: 'API Reference', href: 'https://github.com/vlayer' },
     { name: 'HIPAA Guide', href: '#' },
-    { name: 'Blog', href: '#' },
+    { name: 'Blog', href: '/blog' },
   ],
   Company: [
     { name: 'About', href: '#' },

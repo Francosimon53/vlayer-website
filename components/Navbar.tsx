@@ -25,6 +25,9 @@ export default function Navbar() {
             <a href="#pricing" className="text-gray-600 hover:text-[#0066CC] transition-colors">
               Pricing
             </a>
+            <a href="/blog" className="text-gray-600 hover:text-[#0066CC] transition-colors">
+              Blog
+            </a>
             <a
               href="https://play.vlayer.app"
               className="text-[#7C3AED] font-medium hover:text-[#6D28D9] transition-colors flex items-center gap-1"
@@ -80,6 +83,7 @@ export default function Navbar() {
             <div className="flex flex-col gap-4">
               <a href="#features" className="text-gray-600 hover:text-[#0066CC]">Features</a>
               <a href="#pricing" className="text-gray-600 hover:text-[#0066CC]">Pricing</a>
+              <a href="/blog" className="text-gray-600 hover:text-[#0066CC]">Blog</a>
               <a href="https://play.vlayer.app" className="text-[#7C3AED] font-medium hover:text-[#6D28D9]">Playground</a>
               <a href="https://docs.vlayer.app" className="text-gray-600 hover:text-[#0066CC]">Docs</a>
               <a href="https://github.com/vlayer" className="text-gray-600 hover:text-[#0066CC]">GitHub</a>
