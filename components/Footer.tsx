@@ -2,11 +2,11 @@ const footerLinks = {
   Product: [
     { name: 'Features', href: '#features' },
     { name: 'Pricing', href: '#pricing' },
-    { name: 'CLI Docs', href: 'https://github.com/Francosimon53/verification-layer' },
+    { name: 'CLI Docs', href: 'https://docs.vlayer.app' },
     { name: 'Blog', href: '/blog' },
   ],
   Resources: [
-    { name: 'Documentation', href: 'https://github.com/Francosimon53/verification-layer' },
+    { name: 'Documentation', href: 'https://docs.vlayer.app' },
     { name: 'Playground', href: 'https://play.vlayer.app' },
     { name: 'Demo Apps', href: 'https://github.com/Francosimon53/vlayer-demo-nextjs' },
     { name: 'Contact', href: 'mailto:hello@vlayer.app' },

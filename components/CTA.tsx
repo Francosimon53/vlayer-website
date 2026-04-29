@@ -47,7 +47,7 @@ export default function CTA() {
             View on GitHub
           </a>
           <a
-            href="https://github.com/Francosimon53/verification-layer/docs"
+            href="https://docs.vlayer.app"
             className="bg-blue-800 text-white px-8 py-3.5 rounded-lg font-medium hover:bg-blue-900 transition-colors text-lg"
           >
             Read Documentation
