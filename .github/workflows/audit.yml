@@ -47,13 +47,29 @@ jobs:
 
       - name: Run vlayer scan
         id: scan
+        # vlayer exits with code 1 when findings are present (semantic "found", not "error").
+        # Threshold logic must come from parsing the JSON, not from the CLI exit code.
+        # We absorb exits 0 (clean) and 1 (issues found) with || true, and detect real
+        # failures (network, OOM, missing binary) by checking that vlayer-report.json was
+        # actually created and is valid JSON.
         run: |
           npx --yes verification-layer@latest scan . \
             --config vlayer.config.json \
             --no-ai \
             -f json \
-            -o vlayer-report.json
-          echo "scan completed"
+            -o vlayer-report.json || true
+
+          if [ ! -f vlayer-report.json ]; then
+            echo "::error::vlayer-report.json was not created — scan failed catastrophically"
+            exit 1
+          fi
+
+          if ! jq empty vlayer-report.json 2>/dev/null; then
+            echo "::error::vlayer-report.json is not valid JSON — scan output is corrupted"
+            exit 1
+          fi
+
+          echo "scan completed, report generated"
 
       - name: Parse scan results
         id: parse
