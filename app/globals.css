@@ -25,12 +25,12 @@ body {
 }
 
 @keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+  0%, 50% { opacity: 0; }
+  51%, 100% { opacity: 1; }
 }
 
 .cursor-blink {
-  animation: blink 1s infinite;
+  animation: blink 1s 5;
 }
 
 @keyframes typewriter {
