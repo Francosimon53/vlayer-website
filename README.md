@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# vlayer.app
 
-## Getting Started
+Marketing site for [vlayer](https://github.com/Francosimon53/verification-layer) — an open-source HIPAA compliance scanner for healthcare developers.
 
-First, run the development server:
+[![vlayer audit](https://github.com/Francosimon53/vlayer-website/actions/workflows/audit.yml/badge.svg)](https://github.com/Francosimon53/vlayer-website/actions/workflows/audit.yml)
+
+Live at **[vlayer.app](https://vlayer.app)**.
+
+## About vlayer
+
+vlayer scans source code for HIPAA compliance violations across 141 rules in 5 categories (encryption, access control, audit logging, data integrity, incident response). It runs as a CLI, an MCP server for AI assistants, a GitHub Action, and a VS Code extension. The scanner is open-source under [its own LICENSE](https://github.com/Francosimon53/verification-layer/blob/main/LICENSE).
+
+This repository contains only the marketing site at [vlayer.app](https://vlayer.app).
+
+## Security
+
+This site is scanned nightly by vlayer itself — we run our own product on our own marketing site. The audit runs at 08:00 UTC every day and on every push to `main`.
+
+If new critical or high severity findings appear, the workflow opens or updates a tracking GitHub issue automatically (label: `vlayer-audit`).
+
+Documented acknowledgments for known false positives are in [`vlayer.config.json`](./vlayer.config.json) — each entry includes the reason, expiration date, and a link to an upstream tracking issue. The scan workflow is at [`.github/workflows/audit.yml`](./.github/workflows/audit.yml).
+
+Open upstream issues from dogfooding the scanner on this site:
+
+- [verification-layer#32](https://github.com/Francosimon53/verification-layer/issues/32) — MFA-001 false positive on import patterns
+- [verification-layer#33](https://github.com/Francosimon53/verification-layer/issues/33) — HIPAA-SESSION-001 false positive on Supabase managed sessions
+- [verification-layer#34](https://github.com/Francosimon53/verification-layer/issues/34) — `security-dangerous-innerhtml-react` should detect DOMPurify as valid mitigation
+- [verification-layer#35](https://github.com/Francosimon53/verification-layer/issues/35) — Baseline hash should not include line number
+- [verification-layer#36](https://github.com/Francosimon53/verification-layer/issues/36) — Baseline stores absolute file paths (CI portability blocker)
+
+## Tech stack
+
+- [Next.js 16](https://nextjs.org/) with App Router
+- TypeScript
+- [Supabase](https://supabase.com) for authentication
+- [Stripe](https://stripe.com) for billing
+- [DOMPurify](https://github.com/cure53/DOMPurify) for content sanitization
+- Deployed on [Vercel](https://vercel.com)
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The site will be available at `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Available scripts:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev` — start the development server
+- `npm run build` — production build
+- `npm start` — run the production build locally
+- `npm run lint` — run ESLint
 
-## Learn More
+## Running the security scan locally
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npx --yes verification-layer@latest scan . --config vlayer.config.json --no-ai
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Use `--no-ai` to skip the LLM triage layer. With the layer enabled, set the `ANTHROPIC_API_KEY` environment variable.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+Issues and pull requests are welcome at [github.com/Francosimon53/vlayer-website](https://github.com/Francosimon53/vlayer-website).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+For issues with the scanner itself (rules, false positives, baseline behavior), please open an issue at [Francosimon53/verification-layer](https://github.com/Francosimon53/verification-layer).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+[MIT](./LICENSE)

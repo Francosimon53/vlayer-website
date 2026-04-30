@@ -17,6 +17,8 @@ on:
     # 08:00 UTC = 04:00 EDT (Florida summer time) / 03:00 EST (winter)
     - cron: '0 8 * * *'
   workflow_dispatch:
+  push:
+    branches: [main]
 
 concurrency:
   group: vlayer-audit
