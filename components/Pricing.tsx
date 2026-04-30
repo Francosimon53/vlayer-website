@@ -1,7 +1,7 @@
 const plans = [
   {
     name: 'Free',
-    subtitle: 'Open Source',
+    subtitle: 'Free & Open Source',
     price: '$0',
     period: 'forever',
     description: 'For individual developers and open source projects.',

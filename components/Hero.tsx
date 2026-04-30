@@ -57,7 +57,7 @@ export default function Hero() {
               href="https://app.vlayer.app/signup"
               className="bg-[#0066CC] text-white px-8 py-3.5 rounded-lg font-medium hover:bg-[#0052A3] transition-colors text-lg"
             >
-              Get Started Free
+              Free & Open Source
             </a>
             <a
               href="https://github.com/Francosimon53/verification-layer"
