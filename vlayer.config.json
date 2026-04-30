@@ -1,0 +1,75 @@
+{
+  "exclude": [
+    "vlayer-report.json",
+    "vlayer.config.json",
+    ".vlayer/**",
+    ".next/**",
+    ".git/**",
+    "node_modules/**",
+    "*.tsbuildinfo",
+    "package-lock.json"
+  ],
+  "ai": {
+    "enabled": false,
+    "enableTriage": false,
+    "enableLLMRules": false,
+    "filterFalsePositives": false
+  },
+  "acknowledgedFindings": [
+    {
+      "pattern": "**/app/mcp/route.ts",
+      "reason": "Demo file with intentional HIPAA violations used to showcase the scanner (hardcoded SSN, TLS validation disabled, hardcoded password, CORS wildcard, etc.). Not production code.",
+      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
+      "acknowledgedAt": "2026-04-29T00:00:00.000Z"
+    },
+    {
+      "pattern": "**/components/Features.tsx",
+      "id": "^enc-weak",
+      "reason": "Marketing copy describes weak crypto algorithms (\"MD5 and DES\") as detection examples — text content, not code.",
+      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
+      "acknowledgedAt": "2026-04-29T00:00:00.000Z",
+      "expiresAt": "2027-04-29T00:00:00.000Z"
+    },
+    {
+      "pattern": "**/components/Features.tsx",
+      "id": "^access-auth-bypass",
+      "reason": "Marketing copy mentions \"auth bypass\" detection — text content, not code.",
+      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
+      "acknowledgedAt": "2026-04-29T00:00:00.000Z",
+      "expiresAt": "2027-04-29T00:00:00.000Z"
+    },
+    {
+      "pattern": "**/*.{ts,tsx}",
+      "id": "^MFA-001$",
+      "reason": "Rule fires on every file importing Supabase regardless of actual MFA implementation. False positive while regex is improved. Tracked upstream: https://github.com/Francosimon53/verification-layer/issues/32",
+      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
+      "acknowledgedAt": "2026-04-29T00:00:00.000Z",
+      "expiresAt": "2026-10-29T00:00:00.000Z",
+      "ticketUrl": "https://github.com/Francosimon53/verification-layer/issues/32"
+    },
+    {
+      "pattern": "**/*.{ts,tsx}",
+      "id": "^HIPAA-SESSION-001$",
+      "reason": "Rule fires on createClient patterns regardless of session config — false positive when using Supabase managed sessions. Tracked upstream: https://github.com/Francosimon53/verification-layer/issues/33",
+      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
+      "acknowledgedAt": "2026-04-29T00:00:00.000Z",
+      "expiresAt": "2026-10-29T00:00:00.000Z",
+      "ticketUrl": "https://github.com/Francosimon53/verification-layer/issues/33"
+    },
+    {
+      "pattern": "**/package.json",
+      "id": "^audit-no-framework$",
+      "reason": "Static landing page repo with auth via Supabase — no application logging framework needed. Revisit when adding server-side application logic.",
+      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
+      "acknowledgedAt": "2026-04-29T00:00:00.000Z",
+      "expiresAt": "2026-07-29T00:00:00.000Z"
+    },
+    {
+      "pattern": "**",
+      "id": "^HIPAA-PENTEST-001$",
+      "reason": "Vulnerability scanning IS configured: this scanner runs on cron + Dependabot enablement is planned. False negative on the rule's detection of CI configuration.",
+      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
+      "acknowledgedAt": "2026-04-29T00:00:00.000Z"
+    }
+  ]
+}
