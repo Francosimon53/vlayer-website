@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { safeRedirectError } from '@/lib/api-errors';
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -21,7 +22,13 @@ export async function POST(req: NextRequest) {
   });
 
   if (error) {
-    return NextResponse.redirect(new URL(`/signup?error=${encodeURIComponent(error.message)}`, req.url));
+    return safeRedirectError(
+      req,
+      '/signup',
+      error,
+      'auth-signup',
+      'Sign-up failed. Please check your email and password (minimum 6 characters) and try again.',
+    );
   }
 
   // If user is created successfully

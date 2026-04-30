@@ -16,7 +16,12 @@ export async function POST(req: NextRequest) {
   });
 
   if (error) {
-    return NextResponse.redirect(new URL(`/forgot-password?error=${encodeURIComponent(error.message)}`, req.url));
+    console.error(
+      '[auth-reset-password]',
+      error instanceof Error ? (error.stack ?? error.message) : String(error),
+    );
+    // Fall through to the success redirect to prevent email enumeration
+    // (response is bit-for-bit identical between error and success branches)
   }
 
   // Always show success message to prevent email enumeration

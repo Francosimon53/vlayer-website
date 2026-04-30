@@ -70,6 +70,16 @@
       "reason": "Vulnerability scanning IS configured: this scanner runs on cron + Dependabot enablement is planned. False negative on the rule's detection of CI configuration.",
       "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
       "acknowledgedAt": "2026-04-29T00:00:00.000Z"
+    },
+    {
+      "pattern": "**/app/blog/\\[slug\\]/page.tsx",
+      "id": "^security-dangerous-innerhtml-react",
+      "severity": "high",
+      "reason": "Content sanitized via DOMPurify.sanitize() from isomorphic-dompurify before passing to dangerouslySetInnerHTML. Rule does not yet detect sanitization wrappers. Tracked upstream: https://github.com/Francosimon53/verification-layer/issues/34",
+      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
+      "acknowledgedAt": "2026-04-30T00:00:00.000Z",
+      "expiresAt": "2026-07-30T00:00:00.000Z",
+      "ticketUrl": "https://github.com/Francosimon53/verification-layer/issues/34"
     }
   ]
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe, PLANS } from '@/lib/stripe';
 import { createClient } from '@/lib/supabase/server';
+import { safeJsonError } from '@/lib/api-errors';
 
 export async function POST(req: NextRequest) {
   try {
@@ -54,8 +55,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ url: session.url });
-  } catch (error: any) {
-    console.error('Stripe checkout error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    return safeJsonError('stripe-checkout', error, 'Failed to start checkout. Please try again.');
   }
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { safeRedirectError } from '@/lib/api-errors';
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
   });
 
   if (error) {
-    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(error.message)}`, req.url));
+    return safeRedirectError(req, '/login', error, 'auth-oauth', 'Sign-in failed. Please try again.');
   }
 
   // Redirect to OAuth provider
