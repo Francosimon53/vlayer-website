@@ -1,0 +1,178 @@
+# .github/workflows/audit.yml
+# Nightly vlayer security audit of vlayer-website itself.
+# Dogfooding our own scanner — runs every night and creates/updates a GitHub Issue
+# if any new critical or high severity findings appear.
+#
+# WORKAROUND NOTE (April 2026):
+# This workflow uses absolute thresholds (critical=0, high=0) instead of the
+# baseline mechanism due to two upstream bugs in vlayer/verification-layer:
+#   - #35: baseline hash includes line number (unstable across refactors)
+#   - #36: baseline stores absolute paths (unportable across machines/CI)
+# When both are resolved, migrate to baseline-based comparison for granular signal.
+
+name: vlayer audit
+
+on:
+  schedule:
+    # 08:00 UTC = 04:00 EDT (Florida summer time) / 03:00 EST (winter)
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: vlayer-audit
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  scan:
+    name: Run vlayer scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run vlayer scan
+        id: scan
+        run: |
+          npx --yes verification-layer@latest scan . \
+            --config vlayer.config.json \
+            --no-ai \
+            -f json \
+            -o vlayer-report.json
+          echo "scan completed"
+
+      - name: Parse scan results
+        id: parse
+        run: |
+          CRITICAL=$(jq '.stats.critical' vlayer-report.json)
+          HIGH=$(jq '.stats.high' vlayer-report.json)
+          MEDIUM=$(jq '.stats.medium' vlayer-report.json)
+          ACK=$(jq '.stats.acknowledged' vlayer-report.json)
+          UNACK=$(jq '.stats.unacknowledged' vlayer-report.json)
+          TOTAL=$(jq '.stats.total' vlayer-report.json)
+          GRADE=$(jq -r '.complianceScore.grade // "N/A"' vlayer-report.json)
+          SCORE=$(jq -r '.complianceScore.score // "N/A"' vlayer-report.json)
+
+          echo "critical=$CRITICAL" >> "$GITHUB_OUTPUT"
+          echo "high=$HIGH" >> "$GITHUB_OUTPUT"
+          echo "medium=$MEDIUM" >> "$GITHUB_OUTPUT"
+          echo "ack=$ACK" >> "$GITHUB_OUTPUT"
+          echo "unack=$UNACK" >> "$GITHUB_OUTPUT"
+          echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
+          echo "grade=$GRADE" >> "$GITHUB_OUTPUT"
+          echo "score=$SCORE" >> "$GITHUB_OUTPUT"
+
+          echo "## vlayer scan summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Metric | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Score | $SCORE / 100 ($GRADE) |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Critical | $CRITICAL |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| High | $HIGH |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Medium | $MEDIUM |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Acknowledged | $ACK |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Unacknowledged | $UNACK |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Total | $TOTAL |" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
+            echo "failed=true" >> "$GITHUB_OUTPUT"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "❌ **Threshold exceeded**: critical or high findings present." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "failed=false" >> "$GITHUB_OUTPUT"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "✅ **Clean**: no critical or high findings." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vlayer-report-${{ github.run_number }}
+          path: vlayer-report.json
+          retention-days: 30
+
+      - name: Find existing audit issue
+        if: steps.parse.outputs.failed == 'true'
+        id: existing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_NUMBER=$(gh issue list --label "vlayer-audit" --state open --json number --jq '.[0].number // ""')
+          echo "number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
+          if [ -n "$ISSUE_NUMBER" ]; then
+            echo "Found existing audit issue #$ISSUE_NUMBER"
+          else
+            echo "No existing audit issue"
+          fi
+
+      - name: Build issue body
+        if: steps.parse.outputs.failed == 'true'
+        id: body
+        run: |
+          {
+            echo "body<<EOF_BODY"
+            echo "## vlayer audit finding (run #${{ github.run_number }})"
+            echo ""
+            echo "**Date:** $(date -u +'%Y-%m-%d %H:%M UTC')"
+            echo "**Commit:** ${{ github.sha }}"
+            echo "**Run:** [link](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            echo ""
+            echo "### Summary"
+            echo ""
+            echo "| Metric | Value |"
+            echo "|---|---|"
+            echo "| Score | ${{ steps.parse.outputs.score }} / 100 (${{ steps.parse.outputs.grade }}) |"
+            echo "| Critical | ${{ steps.parse.outputs.critical }} |"
+            echo "| High | ${{ steps.parse.outputs.high }} |"
+            echo "| Medium | ${{ steps.parse.outputs.medium }} |"
+            echo "| Acknowledged | ${{ steps.parse.outputs.ack }} |"
+            echo "| Unacknowledged | ${{ steps.parse.outputs.unack }} |"
+            echo ""
+            echo "### Top critical/high findings"
+            echo ""
+            echo '```json'
+            jq '[.findings[] | select(.severity == "critical" or .severity == "high")] | .[0:10] | map({rule: (.rule // .ruleId), severity, file, line, title: (.title // .message // "n/a")})' vlayer-report.json
+            echo '```'
+            echo ""
+            echo "Download the full \`vlayer-report.json\` artifact from the run link above."
+            echo ""
+            echo "_This issue was created automatically by the nightly vlayer audit workflow._"
+            echo "EOF_BODY"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create or update audit issue
+        if: steps.parse.outputs.failed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -n "${{ steps.existing.outputs.number }}" ]; then
+            echo "Updating existing issue #${{ steps.existing.outputs.number }}"
+            gh issue comment "${{ steps.existing.outputs.number }}" --body "${{ steps.body.outputs.body }}"
+          else
+            echo "Creating new audit issue"
+            gh issue create \
+              --title "vlayer audit: ${{ steps.parse.outputs.critical }} critical, ${{ steps.parse.outputs.high }} high (run #${{ github.run_number }})" \
+              --label "vlayer-audit,security" \
+              --body "${{ steps.body.outputs.body }}"
+          fi
+
+      - name: Fail job if threshold exceeded
+        if: steps.parse.outputs.failed == 'true'
+        run: |
+          echo "::error::vlayer scan found critical or high findings. See issue and artifact."
+          exit 1
