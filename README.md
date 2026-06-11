@@ -46,6 +46,12 @@ npm run dev
 
 The site will be available at `http://localhost:3000`.
 
+### Environment variables
+
+| Variable | Purpose |
+|---|---|
+| `AGENCY_PAYMENT_LINK_URL` | Stripe Payment Link for the $149/mo Agency plan, used by the CTAs on `/agencies`. If unset, the CTA falls back to the signup flow so the page is never broken. Paste the existing Payment Link URL — do **not** create a new Stripe product. |
+
 Available scripts:
 
 - `npm run dev` — start the development server
