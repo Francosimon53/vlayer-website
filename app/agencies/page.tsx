@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-// The real $149/mo Stripe Payment Link is wired through this env var. Until it
+// The real $449/mo Stripe Payment Link is wired through this env var. Until it
 // is set (see .env.example), the CTA falls back to the signup flow so the page
 // is never broken in preview.
 const AGENCY_PAYMENT_LINK =
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Your healthcare client will ask for proof.',
     description:
-      'VLayer generates audit-ready HIPAA evidence — with your agency’s name on it — in 60 seconds. $149/mo, unlimited projects.',
+      'VLayer generates audit-ready HIPAA evidence — with your agency’s name on it — in 60 seconds. $449/mo, unlimited projects.',
     type: 'website',
     url: 'https://vlayer.app/agencies',
     siteName: 'vlayer',
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Your healthcare client will ask for proof.',
     description:
-      'Audit-ready, white-label HIPAA reports for healthcare dev agencies. $149/mo, unlimited projects.',
+      'Audit-ready, white-label HIPAA reports for healthcare dev agencies. $449/mo, unlimited projects.',
   },
 };
 
@@ -85,7 +85,7 @@ const faqs = [
 ];
 
 const mathRows = [
-  { label: 'Your cost', value: '$149 / month', sub: 'Unlimited projects' },
+  { label: 'Your cost', value: '$449 / month', sub: 'Unlimited projects' },
   { label: 'You bill per delivery', value: '$500 – $2,000', sub: 'Per client report' },
 ];
 
@@ -168,7 +168,7 @@ export default function AgenciesPage() {
               The math is not subtle.
             </h2>
             <p className="text-xl text-gray-600">
-              $149/month. Unlimited projects. Agencies bill the report at
+              $449/month. Unlimited projects. Agencies bill the report at
               $500–$2,000 per delivery.
             </p>
           </div>
@@ -198,7 +198,7 @@ export default function AgenciesPage() {
             ))}
           </div>
           <p className="text-center text-gray-500 mt-6 text-sm">
-            One delivered report can cover a year of VLayer.
+            Bill the report at $500–$2,000. VLayer is $449/month, unlimited.
           </p>
         </div>
       </section>
@@ -304,7 +304,7 @@ export default function AgenciesPage() {
             Stop promising. Start proving.
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            $149/month, unlimited projects. Your first white-label report is 60 seconds away.
+            $449/month, unlimited projects. Your first white-label report is 60 seconds away.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
