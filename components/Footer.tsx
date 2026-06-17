@@ -2,6 +2,7 @@ const footerLinks = {
   Product: [
     { name: 'Features', href: '#features' },
     { name: 'Pricing', href: '#pricing' },
+    { name: 'For Agencies', href: '/agencies' },
     { name: 'CLI Docs', href: 'https://docs.vlayer.app' },
     { name: 'Blog', href: '/blog' },
   ],

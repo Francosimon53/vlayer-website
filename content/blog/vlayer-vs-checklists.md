@@ -70,7 +70,7 @@ Compliance Score: 38/100 (F)
 | | Manual Checklist | vlayer |
 |---|---|---|
 | **Frequency** | Quarterly | Every PR |
-| **Coverage** | Whatever someone remembers | 140+ rules, every file |
+| **Coverage** | Whatever someone remembers | 131 rules, every file |
 | **False confidence** | High — "we checked the box" | Low — shows exact file and line |
 | **Time to detect** | Weeks to months | Seconds |
 | **Drift detection** | None — snapshot in time | Continuous — catches regressions |
@@ -108,7 +108,7 @@ npx vlayer scan ./src -f html -o hipaa-report.html
 npx vlayer score ./src
 ```
 
-vlayer is open source, free, and scans 140+ HIPAA rules across 5 compliance categories.
+vlayer is open source, free, and scans 131 HIPAA rules across 5 compliance categories.
 
 The checklist had its time. Automate it.
 

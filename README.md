@@ -8,7 +8,7 @@ Live at **[vlayer.app](https://vlayer.app)**.
 
 ## About vlayer
 
-vlayer scans source code for HIPAA compliance violations across 141 rules in 5 categories (encryption, access control, audit logging, data integrity, incident response). It runs as a CLI, an MCP server for AI assistants, a GitHub Action, and a VS Code extension. The scanner is open-source under [its own LICENSE](https://github.com/Francosimon53/verification-layer/blob/main/LICENSE).
+vlayer scans source code for HIPAA compliance violations across 131 rules in 5 categories (encryption, access control, audit logging, data integrity, incident response). It runs as a CLI, an MCP server for AI assistants, a GitHub Action, and a VS Code extension. The scanner is open-source under [its own LICENSE](https://github.com/Francosimon53/verification-layer/blob/main/LICENSE).
 
 This repository contains only the marketing site at [vlayer.app](https://vlayer.app).
 
@@ -45,6 +45,12 @@ npm run dev
 ```
 
 The site will be available at `http://localhost:3000`.
+
+### Environment variables
+
+| Variable | Purpose |
+|---|---|
+| `AGENCY_PAYMENT_LINK_URL` | Stripe Payment Link for the $149/mo Agency plan, used by the CTAs on `/agencies`. If unset, the CTA falls back to the signup flow so the page is never broken. Paste the existing Payment Link URL — do **not** create a new Stripe product. |
 
 Available scripts:
 
