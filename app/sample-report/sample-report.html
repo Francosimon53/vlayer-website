@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HIPAA Compliance Audit Report - Organization</title>
+  <title>HIPAA Compliance Audit Report - Northwind Health</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -588,15 +588,15 @@
     <div class="report-header">
       <div class="logo-placeholder">VL</div>
       <h1>HIPAA Compliance Audit Report</h1>
-      <div class="subtitle">Organization - June 2026</div>
-      
+      <div class="subtitle">Northwind Health - June 2026</div>
+      <div class="prepared-by">Prepared by Northwind Health</div>
     </div>
 
     <div class="report-meta">
       <div class="report-meta-grid">
         <div class="meta-item">
           <div class="meta-label">Report Generated</div>
-          <div class="meta-value">6/16/2026, 9:09:15 AM</div>
+          <div class="meta-value">6/17/2026, 11:33:08 PM</div>
         </div>
         <div class="meta-item">
           <div class="meta-label">Auditor</div>
@@ -604,11 +604,11 @@
         </div>
         <div class="meta-item">
           <div class="meta-label">Target Path</div>
-          <div class="meta-value">/Users/simonfranco/Projects/vlayer-demo-nextjs/src</div>
+          <div class="meta-value">vlayer-demo-nextjs</div>
         </div>
         <div class="meta-item">
           <div class="meta-label">Files Scanned</div>
-          <div class="meta-value">2</div>
+          <div class="meta-value">4</div>
         </div>
       </div>
     </div>
@@ -632,7 +632,7 @@
           <div class="metric-content">
             <div class="metric-label">Total Issues</div>
             <div class="metric-value">27</div>
-            <div class="metric-subtext">8 critical, 12 high</div>
+            <div class="metric-subtext">7 critical, 13 high</div>
           </div>
         </div>
 
@@ -640,8 +640,8 @@
           <div class="metric-icon">📁</div>
           <div class="metric-content">
             <div class="metric-label">Files Scanned</div>
-            <div class="metric-value">2</div>
-            <div class="metric-subtext">in 138ms</div>
+            <div class="metric-value">4</div>
+            <div class="metric-subtext">in 139ms</div>
           </div>
         </div>
 
@@ -649,7 +649,7 @@
           <div class="metric-icon">📉</div>
           <div class="metric-content">
             <div class="metric-label">Penalty Points</div>
-            <div class="metric-value">-150</div>
+            <div class="metric-value">-155</div>
             <div class="metric-subtext">from 27 findings</div>
           </div>
         </div>
@@ -694,11 +694,11 @@
           <div class="breakdown-grid">
             <div class="breakdown-item">
               <div class="breakdown-label">Critical</div>
-              <div class="breakdown-value critical">8</div>
+              <div class="breakdown-value critical">7</div>
             </div>
             <div class="breakdown-item">
               <div class="breakdown-label">High</div>
-              <div class="breakdown-value high">12</div>
+              <div class="breakdown-value high">13</div>
             </div>
             <div class="breakdown-item">
               <div class="breakdown-label">Medium</div>
@@ -718,7 +718,7 @@
         <div class="recommendations-box">
           <h3>💡 Recommendations</h3>
           <ul>
-            <li>Address 8 critical issue(s) immediately - these pose severe HIPAA compliance risks</li><li>Resolve 12 high severity issue(s) as soon as possible</li><li>Your compliance score is below acceptable levels. Consider a comprehensive security audit</li>
+            <li>Address 7 critical issue(s) immediately - these pose severe HIPAA compliance risks</li><li>Resolve 13 high severity issue(s) as soon as possible</li><li>Your compliance score is below acceptable levels. Consider a comprehensive security audit</li>
           </ul>
         </div>
       
@@ -727,16 +727,17 @@
 
       <h2>📋 Findings Summary</h2>
       <p class="findings-count-note">
-        <strong>26 current findings</strong> across
-        <strong>21 entries</strong>
-        — grouped by file, line &amp; control family. Filters count entries.
-        <br><span class="upcoming-inline">+ 1 upcoming requirement (NPRM — proposed rule)</span> — listed separately below.
+        <strong>27 findings grouped into 22 locations</strong>
+        — multiple controls flagged at the same file &amp; line are shown together,
+        but each is counted individually. The chip counts below match the
+        Executive Summary.
+        <br><span class="upcoming-inline">+ 1 upcoming requirement (NPRM — proposed rule)</span> — listed separately below, excluded from the counts above.
       </p>
       <div class="filters">
         <div class="filter-buttons">
-          <button class="filter-btn active" onclick="filterFindings('all')">All (21)</button>
+          <button class="filter-btn active" onclick="filterFindings('all')">All (27)</button>
           <button class="filter-btn" onclick="filterFindings('critical')">Critical (7)</button>
-          <button class="filter-btn" onclick="filterFindings('high')">High (7)</button>
+          <button class="filter-btn" onclick="filterFindings('high')">High (13)</button>
           <button class="filter-btn" onclick="filterFindings('medium')">Medium (5)</button>
           <button class="filter-btn" onclick="filterFindings('low')">Low (0)</button>
         </div>
@@ -753,16 +754,16 @@
         </thead>
         <tbody>
           
-            <tr class="finding-row" data-severity="critical">
+            <tr class="finding-row" data-severity="critical" data-severities="critical">
               <td><span class="severity-badge severity-critical">critical</span></td>
               <td>Missing Multi-Factor Authentication for PHI Access</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/api/patients/route.ts:12</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/api/patients/route.ts:12</td>
               <td>45 CFR §164.312(a)(2)(i) — Access Control (Required)</td>
             </tr>
-            <tr class="finding-row finding-group" data-severity="critical">
+            <tr class="finding-row finding-group" data-severity="critical" data-severities="critical high">
               <td><span class="severity-badge severity-critical">critical</span></td>
               <td colspan="3">
-                <div class="group-location"><span class="group-location-path">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/api/patients/route.ts:36</span> · 4 controls flagged at this location</div>
+                <div class="group-location"><span class="group-location-path">src/app/api/patients/route.ts:36</span> · 4 controls flagged at this location</div>
                 <ul class="group-controls">
                 <li class="group-control">
                   <span class="severity-badge severity-critical group-control-sev">critical</span>
@@ -787,34 +788,34 @@
                 </ul>
               </td>
             </tr>
-            <tr class="finding-row" data-severity="critical">
+            <tr class="finding-row" data-severity="critical" data-severities="critical">
               <td><span class="severity-badge severity-critical">critical</span></td>
               <td>Missing Multi-Factor Authentication for PHI Access</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/api/patients/route.ts:55</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/api/patients/route.ts:55</td>
               <td>45 CFR §164.312(a)(2)(i) — Access Control (Required)</td>
             </tr>
-            <tr class="finding-row" data-severity="critical">
+            <tr class="finding-row" data-severity="critical" data-severities="critical">
               <td><span class="severity-badge severity-critical">critical</span></td>
               <td>ePHI Stored Without Encryption at Rest</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/dashboard/page.tsx:25</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/dashboard/page.tsx:25</td>
               <td>45 CFR §164.312(a)(2)(iv) — Encryption (Required)</td>
             </tr>
-            <tr class="finding-row" data-severity="critical">
+            <tr class="finding-row" data-severity="critical" data-severities="critical">
               <td><span class="severity-badge severity-critical">critical</span></td>
               <td>PHI stored in localStorage</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/dashboard/page.tsx:25</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/dashboard/page.tsx:25</td>
               <td>45 CFR §164.502 — Uses and Disclosures of PHI: General Rules; 45 CFR §164.514 — De-identification and Minimum Necessary</td>
             </tr>
-            <tr class="finding-row" data-severity="critical">
+            <tr class="finding-row" data-severity="critical" data-severities="critical">
               <td><span class="severity-badge severity-critical">critical</span></td>
               <td>PHI Data in Error Logs or Thrown Errors</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/dashboard/page.tsx:27</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/dashboard/page.tsx:27</td>
               <td>45 CFR §164.312(c) — Integrity Controls</td>
             </tr>
-            <tr class="finding-row finding-group" data-severity="critical">
+            <tr class="finding-row finding-group" data-severity="critical" data-severities="critical high">
               <td><span class="severity-badge severity-critical">critical</span></td>
               <td colspan="3">
-                <div class="group-location"><span class="group-location-path">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/dashboard/page.tsx:31</span> · 2 controls flagged at this location</div>
+                <div class="group-location"><span class="group-location-path">src/app/dashboard/page.tsx:31</span> · 2 controls flagged at this location</div>
                 <ul class="group-controls">
                 <li class="group-control">
                   <span class="severity-badge severity-critical group-control-sev">critical</span>
@@ -829,16 +830,22 @@
                 </ul>
               </td>
             </tr>
-            <tr class="finding-row" data-severity="high">
+            <tr class="finding-row" data-severity="high" data-severities="high">
+              <td><span class="severity-badge severity-high">high</span></td>
+              <td>No audit logging framework detected</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">package.json:N/A</td>
+              <td>45 CFR §164.312(b) — Audit Controls</td>
+            </tr>
+            <tr class="finding-row" data-severity="high" data-severities="high">
               <td><span class="severity-badge severity-high">high</span></td>
               <td>PHI Data Access Without Role/Permission Verification</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/api/patients/route.ts:21</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/api/patients/route.ts:21</td>
               <td>45 CFR §164.312(a)(1) — Access Control</td>
             </tr>
-            <tr class="finding-row finding-group" data-severity="high">
+            <tr class="finding-row finding-group" data-severity="high" data-severities="high">
               <td><span class="severity-badge severity-high">high</span></td>
               <td colspan="3">
-                <div class="group-location"><span class="group-location-path">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/api/patients/route.ts:37</span> · 2 controls flagged at this location</div>
+                <div class="group-location"><span class="group-location-path">src/app/api/patients/route.ts:37</span> · 2 controls flagged at this location</div>
                 <ul class="group-controls">
                 <li class="group-control">
                   <span class="severity-badge severity-high group-control-sev">high</span>
@@ -853,73 +860,73 @@
                 </ul>
               </td>
             </tr>
-            <tr class="finding-row" data-severity="high">
+            <tr class="finding-row" data-severity="high" data-severities="high">
               <td><span class="severity-badge severity-high">high</span></td>
               <td>PHI Data Access Without Role/Permission Verification</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/api/patients/route.ts:62</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/api/patients/route.ts:62</td>
               <td>45 CFR §164.312(a)(1) — Access Control</td>
             </tr>
-            <tr class="finding-row" data-severity="high">
+            <tr class="finding-row" data-severity="high" data-severities="high">
               <td><span class="severity-badge severity-high">high</span></td>
               <td>Unsanitized Error Details Sent to User</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/api/patients/route.ts:67</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/api/patients/route.ts:67</td>
               <td>45 CFR §164.312(b) — Audit Controls</td>
             </tr>
-            <tr class="finding-row" data-severity="high">
+            <tr class="finding-row" data-severity="high" data-severities="high">
               <td><span class="severity-badge severity-high">high</span></td>
               <td>Encryption issue: Unencrypted HTTP URL</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/dashboard/page.tsx:20</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/dashboard/page.tsx:20</td>
               <td>45 CFR §164.312(e)(1) — Transmission Security</td>
             </tr>
-            <tr class="finding-row" data-severity="high">
+            <tr class="finding-row" data-severity="high" data-severities="high">
               <td><span class="severity-badge severity-high">high</span></td>
               <td>Missing Automatic Session Timeout</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/dashboard/page.tsx:35</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/dashboard/page.tsx:35</td>
               <td>45 CFR §164.312(a)(2)(iii) — Session Control (Required)</td>
             </tr>
-            <tr class="finding-row" data-severity="high">
+            <tr class="finding-row" data-severity="high" data-severities="high">
               <td><span class="severity-badge severity-high">high</span></td>
               <td>Missing Vulnerability Scanning Configuration</td>
               <td style="font-family: monospace; font-size: 0.875rem;">project-level:1</td>
               <td>45 CFR §164.308(a)(8) — Evaluation (Required)</td>
             </tr>
-            <tr class="finding-row" data-severity="medium">
+            <tr class="finding-row" data-severity="medium" data-severities="medium">
               <td><span class="severity-badge severity-medium">medium</span></td>
               <td>Database Without Backup Configuration</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/api/patients/route.ts:10</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/api/patients/route.ts:10</td>
               <td>45 CFR §164.308(a)(7)(ii)(A) — Data Backup Plan</td>
             </tr>
-            <tr class="finding-row" data-severity="medium">
+            <tr class="finding-row" data-severity="medium" data-severities="medium">
               <td><span class="severity-badge severity-medium">medium</span></td>
               <td>SELECT * on PHI Tables Violates Minimum Necessary Principle</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/api/patients/route.ts:22</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/api/patients/route.ts:22</td>
               <td>45 CFR §164.502(b) — Minimum Necessary Requirement</td>
             </tr>
-            <tr class="finding-row" data-severity="medium">
+            <tr class="finding-row" data-severity="medium" data-severities="medium">
               <td><span class="severity-badge severity-medium">medium</span></td>
               <td>Patient address handling detected</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/api/patients/route.ts:51</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/api/patients/route.ts:51</td>
               <td>45 CFR §164.502 — Uses and Disclosures of PHI: General Rules; 45 CFR §164.514 — De-identification and Minimum Necessary</td>
             </tr>
-            <tr class="finding-row" data-severity="medium">
+            <tr class="finding-row" data-severity="medium" data-severities="medium">
               <td><span class="severity-badge severity-medium">medium</span></td>
               <td>Data deletion without apparent logging</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/api/patients/route.ts:63</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/api/patients/route.ts:63</td>
               <td>45 CFR §164.530(j) — Documentation</td>
             </tr>
-            <tr class="finding-row" data-severity="medium">
+            <tr class="finding-row" data-severity="medium" data-severities="medium">
               <td><span class="severity-badge severity-medium">medium</span></td>
               <td>PHI caching detected</td>
-              <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/dashboard/page.tsx:25</td>
+              <td style="font-family: monospace; font-size: 0.875rem;">src/app/dashboard/page.tsx:25</td>
               <td>45 CFR §164.530(j) — Documentation</td>
             </tr>
-            <tr class="finding-row" data-severity="info">
+            <tr class="finding-row" data-severity="info" data-severities="info">
               <td><span class="severity-badge severity-info">info</span></td>
               <td>ePHI Technology Asset Inventory Generated</td>
               <td style="font-family: monospace; font-size: 0.875rem;">ASSET-INVENTORY:1</td>
               <td>45 CFR §164.308(a)(1)(ii)(A) — Risk Analysis (Required)</td>
             </tr>
-            <tr class="finding-row" data-severity="info">
+            <tr class="finding-row" data-severity="info" data-severities="info">
               <td><span class="severity-badge severity-info">info</span></td>
               <td>ePHI Flow Map Generated</td>
               <td style="font-family: monospace; font-size: 0.875rem;">PHI-FLOW-MAP:1</td>
@@ -949,7 +956,7 @@
               <tr>
                 <td><span class="severity-badge severity-proposed">Proposed</span></td>
                 <td>Authentication Configuration Without MFA Enabled</td>
-                <td style="font-family: monospace; font-size: 0.875rem;">/Users/simonfranco/Projects/vlayer-demo-nextjs/src/app/api/patients/route.ts:10</td>
+                <td style="font-family: monospace; font-size: 0.875rem;">src/app/api/patients/route.ts:10</td>
                 <td>45 CFR §164.312(d) — Person or Entity Authentication (NPRM — proposed rule)</td>
               </tr>
             
@@ -975,12 +982,12 @@
     </div>
 
     <div class="report-footer">
-      <p><strong>VLayer HIPAA Compliance Scanner</strong></p>
+      <p><strong>Prepared by Northwind Health · Powered by VLayer</strong></p>
       <p>Automated compliance scanning for healthcare applications</p>
-      <p style="margin-top: 1rem; font-size: 0.875rem;">Generated: 6/16/2026, 9:09:15 AM</p>
+      <p style="margin-top: 1rem; font-size: 0.875rem;">Generated: 6/17/2026, 11:33:08 PM</p>
     </div>
   </div>
-  
+  <div class="brand-page-footer">Prepared by Northwind Health · Powered by VLayer</div>
 
   <script>
     function filterFindings(severity) {
@@ -991,7 +998,8 @@
       event.target.classList.add('active');
 
       rows.forEach(row => {
-        if (severity === 'all' || row.dataset.severity === severity) {
+        const severities = (row.dataset.severities || row.dataset.severity || '').split(' ');
+        if (severity === 'all' || severities.indexOf(severity) !== -1) {
           row.style.display = '';
         } else {
           row.style.display = 'none';
