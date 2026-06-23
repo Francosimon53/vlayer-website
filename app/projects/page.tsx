@@ -59,10 +59,10 @@ export default async function ProjectsPage() {
             <div className="bg-gray-50 rounded-lg p-6 mb-6">
               <h3 className="font-medium text-gray-900 mb-3">Get started with the CLI:</h3>
               <div className="bg-gray-900 rounded p-4 font-mono text-sm text-left text-green-400">
-                <div>$ npx vlayer scan ./src</div>
+                <div>$ npx verification-layer scan ./src</div>
                 <div className="text-gray-500 mt-2"># Or install globally:</div>
-                <div>$ npm install -g vlayer</div>
-                <div>$ vlayer scan ./src</div>
+                <div>$ npm install -g verification-layer</div>
+                <div>$ verification-layer scan ./src</div>
               </div>
             </div>
 

@@ -134,5 +134,5 @@ In our data across thousands of scans, these are the top violations that make it
 Machines don't get tired. Machines don't skim. Add the scan and stop relying on humans for pattern matching.
 
 ```bash
-npx vlayer scan ./src
+npx verification-layer scan ./src
 ```

@@ -42,7 +42,7 @@ The checklist says "compliant." The code says otherwise. No one notices until an
 vlayer scans your actual codebase. Not a questionnaire. Not someone's memory of what the code does. The code itself.
 
 ```bash
-npx vlayer scan ./src
+npx verification-layer scan ./src
 ```
 
 ```
@@ -99,13 +99,13 @@ Replace your quarterly checklist with a CI scan that runs on every PR:
 
 ```bash
 # Scan locally
-npx vlayer scan ./src
+npx verification-layer scan ./src
 
 # Generate a compliance report for auditors
-npx vlayer scan ./src -f html -o hipaa-report.html
+npx verification-layer scan ./src -f html -o hipaa-report.html
 
 # Get your compliance score
-npx vlayer score ./src
+npx verification-layer score ./src
 ```
 
 vlayer is open source, free, and scans 131 HIPAA rules across 5 compliance categories.
@@ -113,5 +113,5 @@ vlayer is open source, free, and scans 131 HIPAA rules across 5 compliance categ
 The checklist had its time. Automate it.
 
 ```bash
-npx vlayer scan ./src
+npx verification-layer scan ./src
 ```

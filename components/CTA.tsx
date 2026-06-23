@@ -32,7 +32,7 @@ export default function CTA() {
         {/* Alternative */}
         <p className="text-blue-200 mb-8">
           Or use npx without installing:{' '}
-          <code className="bg-blue-800/50 px-2 py-1 rounded">npx vlayer scan .</code>
+          <code className="bg-blue-800/50 px-2 py-1 rounded">npx verification-layer scan .</code>
         </p>
 
         {/* Buttons */}

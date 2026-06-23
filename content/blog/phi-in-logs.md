@@ -171,7 +171,7 @@ All 5 share the same root cause: logging code gets less scrutiny in code review 
 vlayer checks every line, every time, in under 10 seconds:
 
 ```bash
-npx vlayer scan ./src
+npx verification-layer scan ./src
 ```
 
 131 rules. Zero PHI in your logs.
