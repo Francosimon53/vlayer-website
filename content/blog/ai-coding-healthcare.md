@@ -177,7 +177,7 @@ AI generates correct CRUD. It doesn't add auth, audit logging, or RBAC — becau
 Don't stop using AI tools. They're fast and mostly right. But add a compliance check between "AI wrote it" and "it's merged":
 
 ```bash
-npx vlayer scan ./src
+npx verification-layer scan ./src
 ```
 
 Every PR. Every time. 131 rules that catch what AI tools miss.

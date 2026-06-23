@@ -7,7 +7,7 @@ tags: ["hipaa", "compliance", "regulation", "engineering"]
 
 The HIPAA Security Rule NPRM (2026) adds 15 new cybersecurity requirements. Most compliance articles explain them in legal language. This one explains them in code.
 
-vlayer already covers all 15. Here's what each one means for your CI/CD pipeline.
+vlayer automates the code-detectable controls — the technical safeguards under §164.312 and the NPRM requirements a static scan can actually verify. The rest are organizational (process, policy, and evidence a scanner can't produce), and this post is explicit about which is which. Here's what each one means for your CI/CD pipeline.
 
 ## The 9 requirements you can automate today
 
@@ -114,16 +114,16 @@ HIGH  HIPAA-PENTEST-001
   HIPAA: 45 CFR §164.308(a)(8)
 ```
 
-## How to check all 15 in one command
+## How to check the automatable requirements in one command
 
 ```bash
-npx vlayer scan ./src
+npx verification-layer scan ./src
 ```
 
-vlayer checks all 9 automatable HIPAA 2026 requirements on every scan. The remaining 6 (physical safeguards, workforce training, BAA management, contingency planning, security officer designation, risk analysis) are organizational — vlayer provides templates for those.
+vlayer checks the 9 code-detectable HIPAA 2026 requirements on every scan. The remaining requirements are out of scope for static code analysis — things like asset inventory, penetration testing, risk assessments, security training, third-party (BAA) risk management, and backup/contingency operations require organizational process and evidence that no scanner can generate. vlayer provides templates to help you document those, but it does not claim to verify them.
 
 ```bash
-npx vlayer templates list
+npx verification-layer templates list
 ```
 
 The enforcement date is coming. Automate what you can now and document the rest.

@@ -193,13 +193,13 @@ Run this after every change:
 
 ```bash
 # Full scan
-npx vlayer scan ./src
+npx verification-layer scan ./src
 
 # Compliance score
-npx vlayer score ./src
+npx verification-layer score ./src
 
 # HTML report for compliance team
-npx vlayer scan ./src -f html -o hipaa-report.html
+npx verification-layer scan ./src -f html -o hipaa-report.html
 ```
 
 Add to CI so every PR gets checked:
@@ -230,5 +230,5 @@ Add to CI so every PR gets checked:
 Every item on this list is something vlayer checks automatically. Stop relying on memory. Automate it.
 
 ```bash
-npx vlayer scan ./src
+npx verification-layer scan ./src
 ```

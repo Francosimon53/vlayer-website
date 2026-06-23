@@ -102,7 +102,7 @@ export default async function DashboardPage() {
             <div className="text-center py-12 text-gray-500">
               No scans yet. Run your first scan with the CLI:
               <div className="mt-4 bg-gray-50 p-4 rounded font-mono text-sm text-left">
-                npx vlayer scan ./src
+                npx verification-layer scan ./src
               </div>
             </div>
           </div>

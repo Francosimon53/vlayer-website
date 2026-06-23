@@ -14,7 +14,7 @@ Here's how to add vlayer scanning to this exact stack in 10 minutes.
 Before we set up CI, here's what vlayer typically finds in a Supabase + Vercel app:
 
 ```bash
-npx vlayer scan ./src
+npx verification-layer scan ./src
 ```
 
 ```
@@ -174,7 +174,7 @@ async function auditLog(userId: string, action: string, resource: string, resour
 Run the scan again:
 
 ```bash
-npx vlayer scan ./src
+npx verification-layer scan ./src
 ```
 
 ```
@@ -185,5 +185,5 @@ Compliance Score: 94/100 (A)
 The CI pipeline will pass. Every future PR gets scanned automatically. Ship it.
 
 ```bash
-npx vlayer scan ./src
+npx verification-layer scan ./src
 ```

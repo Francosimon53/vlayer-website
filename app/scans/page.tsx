@@ -76,11 +76,11 @@ export default async function ScansPage() {
                   <div className="space-y-2">
                     <div className="bg-white p-3 rounded font-mono text-sm border border-gray-200">
                       <span className="text-gray-500"># Install vlayer CLI</span><br/>
-                      npm install -g vlayer
+                      npm install -g verification-layer
                     </div>
                     <div className="bg-white p-3 rounded font-mono text-sm border border-gray-200">
                       <span className="text-gray-500"># Run a scan</span><br/>
-                      vlayer scan ./src --upload
+                      verification-layer scan ./src --upload
                     </div>
                   </div>
                 </div>

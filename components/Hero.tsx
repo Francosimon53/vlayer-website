@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 export default function Hero() {
   const [terminalText, setTerminalText] = useState('');
-  const fullText = 'npx vlayer scan .';
+  const fullText = 'npx verification-layer scan .';
 
   useEffect(() => {
     let index = 0;

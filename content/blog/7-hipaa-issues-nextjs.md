@@ -249,7 +249,7 @@ export async function DELETE(req: Request) {
 Every one of these issues takes under 5 minutes to fix. Finding them is the hard part — and that's what vlayer does.
 
 ```bash
-npx vlayer scan ./src
+npx verification-layer scan ./src
 ```
 
 131 rules. 5 HIPAA categories. Zero configuration.
