@@ -180,7 +180,7 @@ Don't stop using AI tools. They're fast and mostly right. But add a compliance c
 npx verification-layer scan ./src
 ```
 
-Every PR. Every time. 131 rules that catch what AI tools miss.
+Every PR. Every time. 143 rules that catch what AI tools miss.
 
 The workflow:
 
