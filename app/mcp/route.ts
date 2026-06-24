@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import ruleCatalogJson from './rule-catalog.json';
 
 // ── CORS ────────────────────────────────────────────────────────────────────
 
@@ -19,35 +20,49 @@ function jsonRpcError(id: string | number | null, code: number, message: string,
   );
 }
 
-// ── HIPAA rule database ─────────────────────────────────────────────────────
+// ── Rule catalog (the REAL published catalog, synced from verification-layer) ─
+//
+// app/mcp/rule-catalog.json is a committed snapshot of verification-layer's
+// dist/rule-catalog.json, refreshed by scripts/sync-rule-catalog.mjs before every
+// build. We import only this JSON data — the scanner runtime is never bundled here.
 
-const HIPAA_RULES = [
-  // PHI Exposure
-  { id: 'PHI-001', category: 'phi-exposure', severity: 'critical', title: 'Hardcoded PHI in source code', description: 'Detects patient names, SSNs, MRNs, or DOBs embedded in code or comments.' },
-  { id: 'PHI-002', category: 'phi-exposure', severity: 'critical', title: 'PHI in log statements', description: 'Detects logging of patient identifiers, diagnoses, or treatment data.' },
-  { id: 'PHI-003', category: 'phi-exposure', severity: 'high', title: 'PHI in error messages', description: 'Patient data exposed in user-facing error messages or stack traces.' },
-  { id: 'PHI-004', category: 'phi-exposure', severity: 'high', title: 'Unmasked PHI in API responses', description: 'API endpoints returning full SSN, MRN, or DOB without masking.' },
-  { id: 'PHI-005', category: 'phi-exposure', severity: 'medium', title: 'PHI in URL parameters', description: 'Patient identifiers passed via query strings or URL paths.' },
-  // Encryption
-  { id: 'ENC-001', category: 'encryption', severity: 'critical', title: 'Missing encryption at rest', description: 'PHI stored in plaintext without AES-256 or equivalent encryption.' },
-  { id: 'ENC-002', category: 'encryption', severity: 'critical', title: 'HTTP endpoint handling PHI', description: 'Endpoints processing PHI accessible over HTTP instead of HTTPS/TLS.' },
-  { id: 'ENC-003', category: 'encryption', severity: 'high', title: 'Weak encryption algorithm', description: 'Use of MD5, SHA-1, DES, or other deprecated cryptographic algorithms.' },
-  { id: 'ENC-004', category: 'encryption', severity: 'high', title: 'Hardcoded encryption keys', description: 'Encryption keys or secrets embedded directly in source code.' },
-  { id: 'ENC-005', category: 'encryption', severity: 'medium', title: 'Missing TLS certificate validation', description: 'HTTP clients with disabled certificate verification.' },
-  // Audit Logging
-  { id: 'AUD-001', category: 'audit-logging', severity: 'high', title: 'Missing access audit trail', description: 'PHI access events not logged with user identity and timestamp.' },
-  { id: 'AUD-002', category: 'audit-logging', severity: 'high', title: 'Mutable audit logs', description: 'Audit log entries can be modified or deleted by application code.' },
-  { id: 'AUD-003', category: 'audit-logging', severity: 'medium', title: 'Missing failed authentication logging', description: 'Failed login attempts not recorded for security monitoring.' },
-  { id: 'AUD-004', category: 'audit-logging', severity: 'medium', title: 'Insufficient log retention', description: 'Audit logs not retained for the required 6-year HIPAA minimum.' },
-  // Access Control
-  { id: 'ACL-001', category: 'access-control', severity: 'critical', title: 'Missing authentication on PHI endpoint', description: 'API endpoint serving PHI with no authentication check.' },
-  { id: 'ACL-002', category: 'access-control', severity: 'critical', title: 'Missing role-based access control', description: 'No RBAC or minimum necessary access enforcement for PHI.' },
-  { id: 'ACL-003', category: 'access-control', severity: 'high', title: 'Session timeout not enforced', description: 'User sessions accessing PHI do not expire after inactivity.' },
-  { id: 'ACL-004', category: 'access-control', severity: 'high', title: 'Default credentials in use', description: 'Default admin passwords or API keys not changed from defaults.' },
-  { id: 'ACL-005', category: 'access-control', severity: 'medium', title: 'Missing multi-factor authentication', description: 'Remote access to PHI systems without MFA requirement.' },
-];
+interface CatalogRule {
+  id: string;
+  category: string;
+  severity: string;
+  title: string;
+  description: string;
+  recommendation?: string;
+  hipaaReference?: string;
+  source: string;
+  scanner: string;
+}
 
-// ── Demo scan patterns ──────────────────────────────────────────────────────
+interface RuleCatalog {
+  package: string;
+  version: string;
+  total: number;
+  counts: Record<string, number>;
+  rules: CatalogRule[];
+}
+
+const catalog = ruleCatalogJson as unknown as RuleCatalog;
+const RULES = catalog.rules;
+const RULE_BY_ID = new Map(RULES.map((r) => [r.id, r]));
+const RULE_BY_ID_LOWER = new Map(RULES.map((r) => [r.id.toLowerCase(), r]));
+// Distinct categories, derived from the catalog so nothing can drift out of sync.
+const CATEGORIES = [...new Set(RULES.map((r) => r.category))];
+
+function findRule(id: string): CatalogRule | undefined {
+  return RULE_BY_ID.get(id) ?? RULE_BY_ID_LOWER.get(id.toLowerCase());
+}
+
+// ── Representative quick-scan patterns ──────────────────────────────────────
+//
+// This is a small, honest DEMO: a handful of built-in regexes, each mapped to a
+// REAL catalog rule id. It is not the full scanner. Severity/title are pulled from
+// the catalog by id, and any pattern whose id is not in the catalog is skipped, so
+// scan_code can only ever emit real rule ids.
 
 interface Violation {
   ruleId: string;
@@ -57,54 +72,59 @@ interface Violation {
   column: number;
   snippet: string;
   message: string;
-  fix?: string;
 }
 
-function scanCodeForViolations(code: string, language: string): Violation[] {
+const DEMO_PATTERNS: Array<{ regex: RegExp; ruleId: string; message: string }> = [
+  { regex: /console\.log[^\n]*(?:ssn|patient|diagnosis|mrn|dob|social.?security)/i, ruleId: 'phi-console-log', message: 'PHI detected in console output' },
+  { regex: /(?:ssn|social.?security.?number)\s*[:=]\s*['"`]\d/i, ruleId: 'ssn-hardcoded', message: 'Hardcoded SSN detected' },
+  { regex: /(?:query|params|searchParams)[^\n]*(?:ssn|patient_id|mrn)/i, ruleId: 'phi-query-param', message: 'PHI passed via URL query parameter' },
+  { regex: /(?:md5|sha1)\s*\(/i, ruleId: 'enc-md5', message: 'Weak hash algorithm (MD5/SHA-1) detected' },
+  { regex: /\bdes\s*\(/i, ruleId: 'enc-des', message: 'DES encryption detected' },
+  { regex: /(?:secret|key|password)\s*[:=]\s*['"`][A-Za-z0-9+/=]{8,}/i, ruleId: 'CRED-002', message: 'Hardcoded credential or secret' },
+  { regex: /http:\/\/[^\n]*(?:patient|phi|health|medical|ehr)/i, ruleId: 'enc-http-url', message: 'PHI endpoint using unencrypted HTTP' },
+  { regex: /rejectUnauthorized\s*:\s*false/i, ruleId: 'enc-tls-cert-validation-disabled', message: 'TLS certificate validation disabled' },
+  { regex: /verify\s*[:=]\s*false/i, ruleId: 'enc-tls-cert-validation-disabled', message: 'Certificate verification disabled' },
+  { regex: /password\s*[:=]\s*['"`](?:admin|password|123|default)/i, ruleId: 'hardcoded-password', message: 'Hardcoded or default password detected' },
+];
+
+function scanCodeForViolations(code: string): Violation[] {
   const violations: Violation[] = [];
   const lines = code.split('\n');
 
-  const patterns: Array<{ regex: RegExp; ruleId: string; message: string }> = [
-    { regex: /console\.log.*(?:ssn|patient|diagnosis|mrn|dob|social.?security)/i, ruleId: 'PHI-002', message: 'PHI detected in log statement' },
-    { regex: /(?:ssn|social.?security.?number)\s*[:=]\s*['"`]\d/i, ruleId: 'PHI-001', message: 'Hardcoded SSN detected' },
-    { regex: /(?:patient.?name|patient.?id)\s*[:=]\s*['"`]/i, ruleId: 'PHI-001', message: 'Hardcoded patient identifier detected' },
-    { regex: /Error\(.*(?:patient|ssn|diagnosis)/i, ruleId: 'PHI-003', message: 'PHI exposed in error message' },
-    { regex: /(?:query|params|searchParams).*(?:ssn|patient_id|mrn)/i, ruleId: 'PHI-005', message: 'PHI passed via URL parameters' },
-    { regex: /(?:md5|sha1|des)\s*\(/i, ruleId: 'ENC-003', message: 'Weak encryption algorithm detected' },
-    { regex: /(?:secret|key|password)\s*[:=]\s*['"`][A-Za-z0-9+/=]{8,}/i, ruleId: 'ENC-004', message: 'Hardcoded secret or encryption key' },
-    { regex: /http:\/\/.*(?:patient|phi|health|medical|ehr)/i, ruleId: 'ENC-002', message: 'PHI endpoint using HTTP instead of HTTPS' },
-    { regex: /rejectUnauthorized\s*:\s*false/i, ruleId: 'ENC-005', message: 'TLS certificate validation disabled' },
-    { regex: /verify\s*[:=]\s*false/i, ruleId: 'ENC-005', message: 'Certificate verification disabled' },
-    { regex: /password\s*[:=]\s*['"`](?:admin|password|123|default)/i, ruleId: 'ACL-004', message: 'Default credentials detected' },
-  ];
-
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    for (const pattern of patterns) {
-      if (pattern.regex.test(line)) {
-        const rule = HIPAA_RULES.find((r) => r.id === pattern.ruleId);
-        violations.push({
-          ruleId: pattern.ruleId,
-          severity: rule?.severity ?? 'high',
-          title: rule?.title ?? pattern.ruleId,
-          line: i + 1,
-          column: 1,
-          snippet: line.trim(),
-          message: pattern.message,
-        });
-      }
+    for (const pattern of DEMO_PATTERNS) {
+      if (!pattern.regex.test(line)) continue;
+      const rule = findRule(pattern.ruleId);
+      if (!rule) continue; // never emit an id that isn't in the real catalog
+      violations.push({
+        ruleId: rule.id,
+        severity: rule.severity,
+        title: rule.title,
+        line: i + 1,
+        column: 1,
+        snippet: line.trim(),
+        message: pattern.message,
+      });
     }
   }
 
   return violations;
 }
 
+const QUICK_SCAN_NOTE =
+  `> Representative quick-scan: a small built-in pattern subset, not the full catalog. ` +
+  `The complete scanner checks all ${catalog.total} rules — run \`npx verification-layer scan ./src\` for a full HIPAA scan.`;
+
 // ── Tool definitions ────────────────────────────────────────────────────────
 
 const TOOLS = [
   {
     name: 'scan_code',
-    description: 'Scan source code for HIPAA compliance violations. Analyzes code for PHI exposure, encryption issues, missing audit logging, and access control problems.',
+    description:
+      `Run a representative HIPAA quick-scan over a code snippet using a small built-in pattern subset ` +
+      `(not the full catalog). For a complete scan of all ${catalog.total} rules, use the CLI: ` +
+      `npx verification-layer scan ./src`,
     inputSchema: {
       type: 'object' as const,
       properties: {
@@ -127,13 +147,13 @@ const TOOLS = [
   },
   {
     name: 'list_rules',
-    description: 'List all available HIPAA scanning rules, optionally filtered by category.',
+    description: `List the ${catalog.total} HIPAA scanning rules from the verification-layer catalog, optionally filtered by category.`,
     inputSchema: {
       type: 'object' as const,
       properties: {
         category: {
           type: 'string',
-          enum: ['phi-exposure', 'encryption', 'audit-logging', 'access-control'],
+          enum: CATEGORIES,
           description: 'Filter rules by category',
         },
       },
@@ -141,14 +161,14 @@ const TOOLS = [
   },
   {
     name: 'suggest_fix',
-    description: 'Get auto-fix suggestions for a specific HIPAA violation, including corrected code.',
+    description: 'Get remediation guidance for a specific HIPAA rule by its id, including the recommendation and HIPAA reference.',
     inputSchema: {
       type: 'object' as const,
       properties: {
-        violation_id: { type: 'string', description: 'Rule ID of the violation (e.g. PHI-001, ENC-003)' },
-        code_context: { type: 'string', description: 'The code surrounding the violation' },
+        violation_id: { type: 'string', description: 'Rule ID from the catalog (e.g. enc-des, CRED-002, ssn-hardcoded)' },
+        code_context: { type: 'string', description: 'Optional code surrounding the violation' },
       },
-      required: ['violation_id', 'code_context'],
+      required: ['violation_id'],
     },
   },
 ];
@@ -163,14 +183,14 @@ function handleScanCode(args: Record<string, unknown>) {
     return { content: [{ type: 'text', text: 'Missing required field: code' }], isError: true };
   }
 
-  const violations = scanCodeForViolations(code, language);
+  const violations = scanCodeForViolations(code);
   const lineCount = code.split('\n').length;
 
   if (violations.length === 0) {
     return {
       content: [{
         type: 'text',
-        text: `Scan complete. No HIPAA violations detected in ${lineCount} lines of ${language} code.`,
+        text: `${QUICK_SCAN_NOTE}\n\nQuick-scan complete. No issues detected by the representative patterns in ${lineCount} lines of ${language} code.`,
       }],
     };
   }
@@ -180,7 +200,9 @@ function handleScanCode(args: Record<string, unknown>) {
   const mediumCount = violations.filter((v) => v.severity === 'medium').length;
 
   const lines = [
-    `**HIPAA Scan Results** — ${violations.length} violation(s) found in ${lineCount} lines of ${language}`,
+    QUICK_SCAN_NOTE,
+    '',
+    `**HIPAA Quick-Scan Results** — ${violations.length} potential issue(s) found in ${lineCount} lines of ${language}`,
     '',
     `| Severity | Count |`,
     `|----------|-------|`,
@@ -188,7 +210,7 @@ function handleScanCode(args: Record<string, unknown>) {
     `| High     | ${highCount} |`,
     `| Medium   | ${mediumCount} |`,
     '',
-    '**Violations:**',
+    '**Findings:**',
     '',
   ];
 
@@ -227,14 +249,14 @@ function handleGetComplianceScore(args: Record<string, unknown>) {
           '',
           '**Overall Score: 74/100**',
           '',
-          '_Note: Full repo scanning requires a VLayer account. This is a demo assessment._',
+          '_Note: Full repo scanning requires the verification-layer CLI. This is a demo assessment._',
         ].join('\n'),
       }],
     };
   }
 
-  // Score based on actual code analysis
-  const violations = scanCodeForViolations(code!, 'typescript');
+  // Score based on actual code analysis (representative quick-scan)
+  const violations = scanCodeForViolations(code!);
   const lineCount = Math.max(code!.split('\n').length, 1);
   const violationDensity = violations.length / lineCount;
 
@@ -252,12 +274,14 @@ function handleGetComplianceScore(args: Record<string, unknown>) {
       text: [
         `**HIPAA Compliance Score: ${score}/100** (${grade})`,
         '',
-        `- ${violations.length} violation(s) found in ${lineCount} lines`,
+        `- ${violations.length} issue(s) found in ${lineCount} lines (representative quick-scan)`,
         `- Critical: ${violations.filter((v) => v.severity === 'critical').length}`,
         `- High: ${violations.filter((v) => v.severity === 'high').length}`,
         `- Medium: ${violations.filter((v) => v.severity === 'medium').length}`,
         '',
-        violations.length > 0 ? 'Run `scan_code` for detailed violation reports and `suggest_fix` for remediation.' : 'No violations detected. Code appears HIPAA-compliant.',
+        violations.length > 0
+          ? 'Run `scan_code` for detailed findings and `suggest_fix` for remediation, or `npx verification-layer scan ./src` for the full scan.'
+          : 'No issues detected by the representative patterns. Run `npx verification-layer scan ./src` for the full scan.',
       ].join('\n'),
     }],
   };
@@ -265,14 +289,24 @@ function handleGetComplianceScore(args: Record<string, unknown>) {
 
 function handleListRules(args: Record<string, unknown>) {
   const category = args.category as string | undefined;
-  const filtered = category ? HIPAA_RULES.filter((r) => r.category === category) : HIPAA_RULES;
+  const filtered = category ? RULES.filter((r) => r.category === category) : RULES;
 
-  const categories = [...new Set(filtered.map((r) => r.category))];
-  const lines = [`**VLayer HIPAA Rules** — ${filtered.length} rule(s)`, ''];
+  if (filtered.length === 0) {
+    return {
+      content: [{
+        type: 'text',
+        text: `No rules found for category "${category}". Valid categories: ${CATEGORIES.join(', ')}.`,
+      }],
+    };
+  }
 
-  for (const cat of categories) {
+  const groups = category ? [category] : CATEGORIES;
+  const lines = [`**verification-layer HIPAA Rules** — ${filtered.length} rule(s)`, ''];
+
+  for (const cat of groups) {
     const catRules = filtered.filter((r) => r.category === cat);
-    lines.push(`### ${cat.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}`);
+    if (catRules.length === 0) continue;
+    lines.push(`### ${cat.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())} (${catRules.length})`);
     lines.push('');
     for (const r of catRules) {
       lines.push(`- **[${r.id}]** ${r.title} (${r.severity})`);
@@ -284,125 +318,37 @@ function handleListRules(args: Record<string, unknown>) {
   return { content: [{ type: 'text', text: lines.join('\n') }] };
 }
 
-const FIX_SUGGESTIONS: Record<string, { explanation: string; pattern: string; fix: string }> = {
-  'PHI-001': {
-    explanation: 'Never hardcode PHI in source code. Use environment variables or encrypted configuration, and reference patients by opaque IDs.',
-    pattern: 'patient_name = "John Doe"',
-    fix: 'patient_id = get_patient_id_from_session()  # Reference by opaque ID, never by name',
-  },
-  'PHI-002': {
-    explanation: 'Strip or mask all PHI before logging. Log opaque identifiers only.',
-    pattern: 'console.log("Patient SSN:", patient.ssn)',
-    fix: 'logger.info("Patient access", { patientId: patient.id, action: "view" })  // Log opaque ID only',
-  },
-  'PHI-003': {
-    explanation: 'Return generic error messages to users. Log detailed errors server-side with opaque IDs only.',
-    pattern: 'throw new Error(`Patient ${patient.name} not found`)',
-    fix: 'throw new Error("Record not found")  // Never include PHI in error messages',
-  },
-  'PHI-004': {
-    explanation: 'Mask sensitive fields in API responses. Only return the minimum necessary data.',
-    pattern: 'res.json({ ssn: patient.ssn, name: patient.name })',
-    fix: 'res.json({ id: patient.id, ssn: maskSSN(patient.ssn) })  // Mask: ***-**-1234',
-  },
-  'PHI-005': {
-    explanation: 'Never pass PHI in URL parameters. Use POST request bodies or encrypted tokens.',
-    pattern: '/api/patient?ssn=123-45-6789',
-    fix: 'POST /api/patient with body: { patientId: "opaque-uuid" }  // Use POST + opaque IDs',
-  },
-  'ENC-001': {
-    explanation: 'Encrypt all PHI at rest using AES-256 or equivalent. Use a key management service.',
-    pattern: 'db.store({ data: plaintext_phi })',
-    fix: 'db.store({ data: encrypt(phi, await kms.getKey("phi-key")) })  // AES-256-GCM via KMS',
-  },
-  'ENC-002': {
-    explanation: 'All PHI must be transmitted over TLS 1.2+. Enforce HTTPS in your infrastructure.',
-    pattern: 'fetch("http://api.example.com/patients")',
-    fix: 'fetch("https://api.example.com/patients")  // Always use HTTPS for PHI endpoints',
-  },
-  'ENC-003': {
-    explanation: 'Replace deprecated algorithms with modern alternatives: SHA-256+, AES-256, bcrypt/argon2.',
-    pattern: 'crypto.createHash("md5").update(data)',
-    fix: 'crypto.createHash("sha256").update(data)  // Use SHA-256 minimum',
-  },
-  'ENC-004': {
-    explanation: 'Store secrets in environment variables or a secrets manager. Never commit keys to source control.',
-    pattern: 'const API_KEY = "sk-abc123..."',
-    fix: 'const API_KEY = process.env.API_KEY  // Load from environment or secrets manager',
-  },
-  'ENC-005': {
-    explanation: 'Always validate TLS certificates. Disabling verification exposes PHI to MITM attacks.',
-    pattern: '{ rejectUnauthorized: false }',
-    fix: '{ rejectUnauthorized: true, ca: fs.readFileSync("ca-cert.pem") }  // Validate certs',
-  },
-  'AUD-001': {
-    explanation: 'Log every PHI access with who, what, when, and from where. Use structured audit events.',
-    pattern: 'getPatientRecord(id)',
-    fix: 'auditLog({ action: "phi_access", userId, patientId: id, timestamp: Date.now(), ip: req.ip }); getPatientRecord(id)',
-  },
-  'AUD-002': {
-    explanation: 'Write audit logs to append-only storage. Use immutable log services or write-once buckets.',
-    pattern: 'db.auditLogs.update({ id }, { ...changes })',
-    fix: 'db.auditLogs.insert({ ...event, immutable: true })  // Append-only, never update/delete',
-  },
-  'ACL-001': {
-    explanation: 'Every PHI endpoint must require authentication. Use middleware to enforce this globally.',
-    pattern: 'app.get("/api/patients", handler)',
-    fix: 'app.get("/api/patients", requireAuth, requireRole("provider"), handler)  // Auth + RBAC',
-  },
-  'ACL-002': {
-    explanation: 'Implement role-based access control. Enforce minimum necessary access per HIPAA.',
-    pattern: 'if (user) return allPatientData',
-    fix: 'if (user.role === "provider" && user.assignedPatients.includes(patientId)) return filteredData',
-  },
-  'ACL-004': {
-    explanation: 'Force password changes on first login. Use strong, unique credentials.',
-    pattern: 'password = "admin123"',
-    fix: 'password = await generateSecurePassword()  // Force change on first login',
-  },
-};
-
 function handleSuggestFix(args: Record<string, unknown>) {
-  const violationId = (args.violation_id as string)?.toUpperCase();
-  const codeContext = args.code_context as string;
+  const violationId = (args.violation_id as string)?.trim();
 
   if (!violationId) {
     return { content: [{ type: 'text', text: 'Missing required field: violation_id' }], isError: true };
   }
 
-  const rule = HIPAA_RULES.find((r) => r.id === violationId);
+  const rule = findRule(violationId);
   if (!rule) {
-    return { content: [{ type: 'text', text: `Unknown rule: ${violationId}. Use list_rules to see available rules.` }], isError: true };
+    return {
+      content: [{ type: 'text', text: `Unknown rule: ${violationId}. Use list_rules to see available rules.` }],
+      isError: true,
+    };
   }
 
-  const suggestion = FIX_SUGGESTIONS[violationId];
-
   const lines = [
-    `**Fix for [${rule.id}] ${rule.title}**`,
+    `**[${rule.id}] ${rule.title}**`,
     `Severity: ${rule.severity} | Category: ${rule.category}`,
     '',
     `**Problem:** ${rule.description}`,
-    '',
   ];
 
-  if (suggestion) {
-    lines.push(`**Explanation:** ${suggestion.explanation}`);
-    lines.push('');
-    lines.push('**Before:**');
-    lines.push('```');
-    lines.push(codeContext || suggestion.pattern);
-    lines.push('```');
-    lines.push('');
-    lines.push('**After:**');
-    lines.push('```');
-    lines.push(suggestion.fix);
-    lines.push('```');
+  if (rule.recommendation) {
+    lines.push('', `**Recommendation:** ${rule.recommendation}`);
   } else {
-    lines.push(`**Recommendation:** Review and remediate according to HIPAA Security Rule requirements for ${rule.category}.`);
+    lines.push('', `**Recommendation:** Review and remediate according to HIPAA Security Rule requirements for ${rule.category}.`);
   }
 
-  lines.push('');
-  lines.push(`_HIPAA Reference: 45 CFR 164.312 — Technical Safeguards_`);
+  if (rule.hipaaReference) {
+    lines.push('', `_HIPAA Reference: ${rule.hipaaReference}_`);
+  }
 
   return { content: [{ type: 'text', text: lines.join('\n') }] };
 }
@@ -431,8 +377,9 @@ export function GET() {
       protocol: 'MCP (Model Context Protocol)',
       transport: 'JSON-RPC 2.0 over HTTP POST',
       tools: TOOLS.map((t) => ({ name: t.name, description: t.description })),
-      ruleCount: HIPAA_RULES.length,
-      categories: ['phi-exposure', 'encryption', 'audit-logging', 'access-control'],
+      scannerVersion: catalog.version,
+      ruleCount: catalog.total,
+      categories: CATEGORIES,
     },
     { headers: CORS_HEADERS },
   );
