@@ -252,4 +252,4 @@ Every one of these issues takes under 5 minutes to fix. Finding them is the hard
 npx vlayer scan ./src
 ```
 
-131 rules. 5 HIPAA categories. Zero configuration.
+143 rules. 5 HIPAA categories. Zero configuration.

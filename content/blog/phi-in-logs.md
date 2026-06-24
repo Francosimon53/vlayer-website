@@ -174,4 +174,4 @@ vlayer checks every line, every time, in under 10 seconds:
 npx vlayer scan ./src
 ```
 
-131 rules. Zero PHI in your logs.
+143 rules. Zero PHI in your logs.

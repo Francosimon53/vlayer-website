@@ -8,7 +8,7 @@ Live at **[vlayer.app](https://vlayer.app)**.
 
 ## About vlayer
 
-vlayer scans source code for HIPAA compliance violations across 131 rules in 5 categories (encryption, access control, audit logging, data integrity, incident response). It runs as a CLI, an MCP server for AI assistants, a GitHub Action, and a VS Code extension. The scanner is open-source under [its own LICENSE](https://github.com/Francosimon53/verification-layer/blob/main/LICENSE).
+vlayer scans source code for HIPAA compliance violations across 143 rules in 5 categories (PHI exposure, encryption, access control, audit logging, data retention). It runs as a CLI, an MCP server for AI assistants, a GitHub Action, and a VS Code extension. The scanner is open-source under [its own LICENSE](https://github.com/Francosimon53/verification-layer/blob/main/LICENSE).
 
 This repository contains only the marketing site at [vlayer.app](https://vlayer.app).
 

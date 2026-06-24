@@ -214,10 +214,10 @@ export default function AgenciesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center">
-              <div className="text-4xl font-bold text-[#0066CC] mb-2">131</div>
+              <div className="text-4xl font-bold text-[#0066CC] mb-2">143</div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">Real rules</h3>
               <p className="text-gray-600 text-sm">
-                131 detection rules across the HIPAA technical safeguards — no inflated counts.
+                143 detection rules across the HIPAA technical safeguards — no inflated counts.
               </p>
             </div>
 
