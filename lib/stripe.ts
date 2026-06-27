@@ -10,7 +10,7 @@ export const PLANS = {
     price: 0,
     priceId: null,
     features: [
-      '143 detection rules',
+      'Detection rules mapped to 45 CFR §164.312',
       'CLI scanning & reports',
       'Compliance scoring (0-100)',
       'Developer training module',

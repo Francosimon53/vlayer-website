@@ -169,7 +169,7 @@ export default async function SettingsPage() {
                     <span className="text-green-600">✓</span> CLI scanning tool
                   </li>
                   <li className="flex items-center gap-2 text-gray-700">
-                    <span className="text-green-600">✓</span> 143 detection rules
+                    <span className="text-green-600">✓</span> Detection rules mapped to 45 CFR §164.312
                   </li>
                   <li className="flex items-center gap-2 text-gray-700">
                     <span className="text-green-600">✓</span> Community support
