@@ -31,14 +31,16 @@ export default function Hero() {
 
           {/* Headline */}
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            HIPAA Compliance Scanning for{' '}
-            <span className="text-[#0066CC]">Healthcare Apps</span>
+            The HIPAA scan that gives your client&apos;s security review the{' '}
+            <span className="text-[#0066CC]">proof it&apos;s asking for.</span>
           </h1>
 
           {/* Subheadline */}
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Automatically detect PHI exposure, encryption gaps, and compliance violations
-            in your codebase. Ship healthcare software with confidence.
+            VLayer checks your TypeScript/JavaScript against 45 CFR §164.312 in CI — PHI in
+            logs, exposed keys, weak access control — and generates the signed §164.312
+            report a hospital security review expects. Open-source, deterministic,
+            reproducible: run the same scan, get the same answer.
           </p>
 
           {/* CTA Buttons */}
