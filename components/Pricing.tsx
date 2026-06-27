@@ -6,7 +6,7 @@ const plans = [
     period: 'forever',
     description: 'For individual developers and open source projects.',
     features: [
-      'CLI scanner with 143 detection rules',
+      'CLI scanner mapped to 45 CFR §164.312',
       '5 HIPAA compliance categories',
       'JSON & Markdown reports',
       'Community support (GitHub)',
