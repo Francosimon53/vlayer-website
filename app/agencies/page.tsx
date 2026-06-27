@@ -217,7 +217,7 @@ export default function AgenciesPage() {
               <div className="text-4xl font-bold text-[#0066CC] mb-2">§164.312</div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">Real rules</h3>
               <p className="text-gray-600 text-sm">
-                Detection rules mapped to the HIPAA technical safeguards — no inflated counts.
+                The HIPAA technical safeguards a security review checks — mapped to your code, in CI.
               </p>
             </div>
 
