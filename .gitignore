@@ -43,3 +43,5 @@ next-env.d.ts
 vlayer-report.json
 .vlayer/
 .vlayer-baseline.json
+
+.claude/worktrees/
