@@ -1,0 +1,48 @@
+name: Maintenance dependency refresh
+
+on:
+  push:
+    branches:
+      - chore/maintenance-dependencies-actions
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: chore/maintenance-dependencies-actions
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Upgrade security-sensitive framework packages
+        run: npm install next@16.3.3 eslint-config-next@16.3.3 --save-exact
+
+      - name: Apply non-breaking npm audit fixes
+        run: npm audit fix || true
+
+      - name: Validate
+        run: |
+          npm run lint
+          npm run build
+          npm audit --audit-level=high || true
+
+      - name: Commit refreshed dependency lockfile
+        run: |
+          if git diff --quiet -- package.json package-lock.json; then
+            echo "No dependency changes to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git commit -m "chore(deps): refresh security-sensitive dependencies"
+          git push origin HEAD:chore/maintenance-dependencies-actions
