@@ -18,33 +18,19 @@
   "acknowledgedFindings": [
     {
       "pattern": "**/app/mcp/route.ts",
-      "reason": "Demo file with intentional HIPAA violations used to showcase the scanner (hardcoded SSN, TLS validation disabled, hardcoded password, CORS wildcard, etc.). Not production code.",
-      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
-      "acknowledgedAt": "2026-04-29T00:00:00.000Z"
-    },
-    {
-      "pattern": "**/components/Features.tsx",
-      "id": "^enc-des-13$",
-      "reason": "Marketing copy names DES as an example of weak cryptography that vlayer detects. This is descriptive text, not cryptographic implementation.",
+      "id": "^enc-des-",
+      "reason": "The MCP quick-scan demo intentionally contains a regex signature that recognizes DES usage in submitted code. The match is scanner implementation data, not cryptographic implementation.",
       "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
       "acknowledgedAt": "2026-09-06T00:00:00.000Z",
-      "expiresAt": "2027-04-29T00:00:00.000Z"
+      "expiresAt": "2027-03-06T00:00:00.000Z"
     },
     {
-      "pattern": "**/components/Features.tsx",
-      "id": "^access-auth-bypass",
-      "reason": "Marketing copy mentions \"auth bypass\" detection — text content, not code.",
+      "pattern": "**/app/mcp/route.ts",
+      "id": "^CRED-001$",
+      "reason": "The MCP quick-scan demo intentionally contains an MD5/SHA-1 detection regex. It identifies weak hashing in submitted snippets and does not hash credentials itself.",
       "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
-      "acknowledgedAt": "2026-04-29T00:00:00.000Z",
-      "expiresAt": "2027-04-29T00:00:00.000Z"
-    },
-    {
-      "pattern": "**/package.json",
-      "id": "^audit-no-framework$",
-      "reason": "Static landing page repo with auth via Supabase — no application logging framework needed. Revisit when adding server-side application logic.",
-      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
-      "acknowledgedAt": "2026-04-29T00:00:00.000Z",
-      "expiresAt": "2026-07-29T00:00:00.000Z"
+      "acknowledgedAt": "2026-09-06T00:00:00.000Z",
+      "expiresAt": "2027-03-06T00:00:00.000Z"
     }
   ]
 }
