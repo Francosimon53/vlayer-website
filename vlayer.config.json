@@ -58,7 +58,7 @@
     {
       "pattern": "**",
       "id": "^HIPAA-PENTEST-001$",
-      "reason": "Vulnerability scanning IS configured: this scanner runs on cron + Dependabot enablement is planned. False negative on the rule's detection of CI configuration.",
+      "reason": "Vulnerability scanning is configured: the nightly GitHub Actions audit resolves verification-layer@latest from npm on every run. Dependabot enablement is also planned. The rule does not yet recognize this CI configuration.",
       "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
       "acknowledgedAt": "2026-04-29T00:00:00.000Z"
     },
