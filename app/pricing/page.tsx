@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
@@ -12,19 +12,18 @@ export default function PricingPage() {
   const [user, setUser] = useState<User | null>(null);
   const [authChecked, setAuthChecked] = useState(false);
   const router = useRouter();
-  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
+    const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
       setAuthChecked(true);
     });
-  }, [supabase]);
+  }, []);
 
   const handleUpgrade = async () => {
-    // Check if user is authenticated
     if (!authChecked) {
-      return; // Wait for auth check
+      return;
     }
 
     if (!user) {
@@ -67,7 +66,6 @@ export default function PricingPage() {
         <h1 style={styles.title}>Start free, scale as you grow</h1>
         <p style={styles.subtitle}>All plans include the full rule set and HIPAA 2026 coverage</p>
 
-        {/* Billing Toggle */}
         <div style={styles.toggle}>
           <button
             style={{
@@ -90,9 +88,7 @@ export default function PricingPage() {
         </div>
       </div>
 
-      {/* Pricing Cards */}
       <div style={styles.grid}>
-        {/* Free Plan */}
         <div style={styles.card}>
           <h3 style={styles.planName}>{PLANS.free.name}</h3>
           <div style={styles.price}>
@@ -121,7 +117,6 @@ export default function PricingPage() {
           </a>
         </div>
 
-        {/* Pro Plan */}
         <div style={{ ...styles.card, ...styles.cardFeatured }}>
           <div style={styles.popularBadge}>Most Popular</div>
           <h3 style={styles.planName}>{PLANS.pro.name}</h3>
@@ -154,7 +149,6 @@ export default function PricingPage() {
           <p style={styles.trialNote}>No credit card required</p>
         </div>
 
-        {/* Enterprise Plan */}
         <div style={styles.card}>
           <h3 style={styles.planName}>{PLANS.enterprise.name}</h3>
           <div style={styles.price}>
