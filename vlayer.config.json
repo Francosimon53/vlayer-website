@@ -39,38 +39,12 @@
       "expiresAt": "2027-04-29T00:00:00.000Z"
     },
     {
-      "pattern": "**/*.{ts,tsx}",
-      "id": "^HIPAA-SESSION-001$",
-      "reason": "Rule fires on createClient patterns regardless of session config — false positive when using Supabase managed sessions. Tracked upstream: https://github.com/Francosimon53/verification-layer/issues/33",
-      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
-      "acknowledgedAt": "2026-04-29T00:00:00.000Z",
-      "expiresAt": "2026-10-29T00:00:00.000Z",
-      "ticketUrl": "https://github.com/Francosimon53/verification-layer/issues/33"
-    },
-    {
       "pattern": "**/package.json",
       "id": "^audit-no-framework$",
       "reason": "Static landing page repo with auth via Supabase — no application logging framework needed. Revisit when adding server-side application logic.",
       "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
       "acknowledgedAt": "2026-04-29T00:00:00.000Z",
       "expiresAt": "2026-07-29T00:00:00.000Z"
-    },
-    {
-      "pattern": "**",
-      "id": "^HIPAA-PENTEST-001$",
-      "reason": "Vulnerability scanning is configured: the nightly GitHub Actions audit resolves verification-layer@latest from npm on every run. Dependabot enablement is also planned. The rule does not yet recognize this CI configuration.",
-      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
-      "acknowledgedAt": "2026-04-29T00:00:00.000Z"
-    },
-    {
-      "pattern": "**/app/blog/\\[slug\\]/page.tsx",
-      "id": "^security-dangerous-innerhtml-react",
-      "severity": "high",
-      "reason": "Content sanitized via DOMPurify.sanitize() from isomorphic-dompurify before passing to dangerouslySetInnerHTML. Rule does not yet detect sanitization wrappers. Tracked upstream: https://github.com/Francosimon53/verification-layer/issues/34",
-      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
-      "acknowledgedAt": "2026-04-30T00:00:00.000Z",
-      "expiresAt": "2026-07-30T00:00:00.000Z",
-      "ticketUrl": "https://github.com/Francosimon53/verification-layer/issues/34"
     }
   ]
 }
