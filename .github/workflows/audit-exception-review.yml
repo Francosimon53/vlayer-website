@@ -1,0 +1,31 @@
+name: Review vlayer acknowledgments
+
+on:
+  push:
+    branches: [chore/reduce-audit-exceptions]
+    paths:
+      - '.github/workflows/audit-exception-review.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Scan without broad/expired acknowledgments
+        run: |
+          jq '.acknowledgedFindings |= map(select(.pattern != "**/app/mcp/route.ts" and .id != "^audit-no-framework$"))' vlayer.config.json > /tmp/vlayer.config.json
+          npx --yes verification-layer@latest scan . --config /tmp/vlayer.config.json --no-ai -f json -o vlayer-review.json || true
+          jq '[.findings[] | select(.file | endswith("/app/mcp/route.ts")) | {id,severity,line,title}]' vlayer-review.json
+          jq '[.findings[] | select(.id == "audit-no-framework") | {id,severity,file,title}]' vlayer-review.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: vlayer-exception-review
+          path: vlayer-review.json
