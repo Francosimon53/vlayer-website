@@ -1,0 +1,33 @@
+name: Stage structured logging dependency
+
+on:
+  push:
+    branches: [chore/reduce-audit-exceptions]
+    paths:
+      - '.github/workflows/pino-lock-refresh.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: chore/reduce-audit-exceptions
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install pino
+        run: |
+          npm install pino@^10.0.0 --save
+          npm audit --audit-level=high
+      - name: Commit lockfile update
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add package.json package-lock.json
+          git commit -m 'chore: add structured audit logging dependency'
+          git push origin HEAD:chore/reduce-audit-exceptions
