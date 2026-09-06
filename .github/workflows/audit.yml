@@ -140,10 +140,9 @@ jobs:
 
       - name: Build issue body
         if: steps.parse.outputs.failed == 'true'
-        id: body
         run: |
+          BODY_FILE="$RUNNER_TEMP/vlayer-audit-body.md"
           {
-            echo "body<<EOF_BODY"
             echo "## vlayer audit finding (run #${{ github.run_number }})"
             echo ""
             echo "**Date:** $(date -u +'%Y-%m-%d %H:%M UTC')"
@@ -164,14 +163,16 @@ jobs:
             echo "### Top critical/high findings"
             echo ""
             echo '```json'
-            jq '[.findings[] | select(.severity == "critical" or .severity == "high")] | .[0:10] | map({rule: (.rule // .ruleId), severity, file, line, title: (.title // .message // "n/a")})' vlayer-report.json
+            jq '[.findings[] | select(.severity == "critical" or .severity == "high")] | .[0:10] | map({id, severity, file, line, title: (.title // .message // "n/a")})' vlayer-report.json
             echo '```'
             echo ""
-            echo "Download the full \`vlayer-report.json\` artifact from the run link above."
+            echo 'Download the full `vlayer-report.json` artifact from the run link above.'
             echo ""
             echo "_This issue was created automatically by the nightly vlayer audit workflow._"
-            echo "EOF_BODY"
-          } >> "$GITHUB_OUTPUT"
+          } > "$BODY_FILE"
+
+          echo "body_file=$BODY_FILE" >> "$GITHUB_OUTPUT"
+        id: body
 
       - name: Create or update audit issue
         if: steps.parse.outputs.failed == 'true'
@@ -180,13 +181,13 @@ jobs:
         run: |
           if [ -n "${{ steps.existing.outputs.number }}" ]; then
             echo "Updating existing issue #${{ steps.existing.outputs.number }}"
-            gh issue comment "${{ steps.existing.outputs.number }}" --body "${{ steps.body.outputs.body }}"
+            gh issue comment "${{ steps.existing.outputs.number }}" --body-file "${{ steps.body.outputs.body_file }}"
           else
             echo "Creating new audit issue"
             gh issue create \
               --title "vlayer audit: ${{ steps.parse.outputs.critical }} critical, ${{ steps.parse.outputs.high }} high (run #${{ github.run_number }})" \
               --label "vlayer-audit,security" \
-              --body "${{ steps.body.outputs.body }}"
+              --body-file "${{ steps.body.outputs.body_file }}"
           fi
 
       - name: Fail job if threshold exceeded

@@ -24,10 +24,10 @@
     },
     {
       "pattern": "**/components/Features.tsx",
-      "id": "^enc-weak",
-      "reason": "Marketing copy describes weak crypto algorithms (\"MD5 and DES\") as detection examples — text content, not code.",
+      "id": "^enc-des-13$",
+      "reason": "Marketing copy names DES as an example of weak cryptography that vlayer detects. This is descriptive text, not cryptographic implementation.",
       "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
-      "acknowledgedAt": "2026-04-29T00:00:00.000Z",
+      "acknowledgedAt": "2026-09-06T00:00:00.000Z",
       "expiresAt": "2027-04-29T00:00:00.000Z"
     },
     {
@@ -39,12 +39,12 @@
       "expiresAt": "2027-04-29T00:00:00.000Z"
     },
     {
-      "pattern": "**/*.{ts,tsx}",
-      "id": "^MFA-001$",
-      "reason": "Rule fires on every file importing Supabase regardless of actual MFA implementation. False positive while regex is improved. Tracked upstream: https://github.com/Francosimon53/verification-layer/issues/32",
+      "pattern": "**/app/layout.tsx",
+      "id": "^HIPAA-MFA-001$",
+      "reason": "False positive: the rule matches the metadata key \"authors\" because it contains the substring \"auth\", then sees PHI in unrelated marketing metadata. No authentication endpoint or PHI access occurs in this file.",
       "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
-      "acknowledgedAt": "2026-04-29T00:00:00.000Z",
-      "expiresAt": "2026-10-29T00:00:00.000Z",
+      "acknowledgedAt": "2026-09-06T00:00:00.000Z",
+      "expiresAt": "2026-12-06T00:00:00.000Z",
       "ticketUrl": "https://github.com/Francosimon53/verification-layer/issues/32"
     },
     {
@@ -55,6 +55,30 @@
       "acknowledgedAt": "2026-04-29T00:00:00.000Z",
       "expiresAt": "2026-10-29T00:00:00.000Z",
       "ticketUrl": "https://github.com/Francosimon53/verification-layer/issues/33"
+    },
+    {
+      "pattern": "**/app/api/auth/signup/route.ts",
+      "id": "^HIPAA-BREACH-001$",
+      "reason": "False positive: the rule treats a profile-creation application error as a breach indicator. This line does not represent a security incident or breach event.",
+      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
+      "acknowledgedAt": "2026-09-06T00:00:00.000Z",
+      "expiresAt": "2026-12-06T00:00:00.000Z"
+    },
+    {
+      "pattern": "**/app/api/auth/signin/route.ts",
+      "id": "^HIPAA-BREACH-001$",
+      "reason": "False positive for this endpoint: returning \"Invalid credentials\" for a single failed sign-in is not itself a breach event. Repeated-login monitoring should be evaluated by a dedicated auth-abuse rule rather than a breach-notification rule.",
+      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
+      "acknowledgedAt": "2026-09-06T00:00:00.000Z",
+      "expiresAt": "2026-12-06T00:00:00.000Z"
+    },
+    {
+      "pattern": "**/app/api/auth/oauth/route.ts",
+      "id": "^HIPAA-BREACH-001$",
+      "reason": "False positive: a generic OAuth sign-in failure is not evidence of a breach and should not require a breach-notification handler at this call site.",
+      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
+      "acknowledgedAt": "2026-09-06T00:00:00.000Z",
+      "expiresAt": "2026-12-06T00:00:00.000Z"
     },
     {
       "pattern": "**/package.json",
