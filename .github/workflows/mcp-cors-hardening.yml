@@ -1,0 +1,37 @@
+name: Stage MCP CORS hardening
+
+on:
+  push:
+    branches: [chore/reduce-audit-exceptions]
+    paths:
+      - '.github/workflows/mcp-cors-hardening.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: chore/reduce-audit-exceptions
+      - name: Restrict browser origin
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('app/mcp/route.ts')
+          text = path.read_text()
+          old = "  'Access-Control-Allow-Origin': '*',"
+          new = "  'Access-Control-Allow-Origin': 'https://vlayer.app',"
+          if old not in text:
+              raise SystemExit('Expected wildcard CORS line not found')
+          path.write_text(text.replace(old, new, 1))
+          PY
+      - name: Commit change
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add app/mcp/route.ts
+          git commit -m 'fix: restrict MCP browser CORS origin'
+          git push origin HEAD:chore/reduce-audit-exceptions
