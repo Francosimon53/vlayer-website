@@ -58,6 +58,15 @@
     },
     {
       "pattern": "**/app/api/auth/signup/route.ts",
+      "id": "^MFA-001$",
+      "reason": "False positive for this route: invoking Supabase signUp is an authentication call site, not the provider-level MFA configuration surface. MFA policy is configured outside this endpoint, so absence of MFA setup code in the route is not evidence that MFA is disabled.",
+      "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
+      "acknowledgedAt": "2026-09-06T00:00:00.000Z",
+      "expiresAt": "2026-12-06T00:00:00.000Z",
+      "ticketUrl": "https://github.com/Francosimon53/verification-layer/issues/32"
+    },
+    {
+      "pattern": "**/app/api/auth/signup/route.ts",
       "id": "^HIPAA-BREACH-001$",
       "reason": "False positive: the rule treats a profile-creation application error as a breach indicator. This line does not represent a security incident or breach event.",
       "acknowledgedBy": "Simon Franco <simon@fpienterprises.com>",
