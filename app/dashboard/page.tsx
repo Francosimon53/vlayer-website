@@ -22,8 +22,12 @@ export default async function DashboardPage() {
     .eq('id', user.id)
     .single();
 
+  const now = new Date();
   const isTrialing = profile?.subscription_status === 'trialing' ||
-                     (profile?.trial_ends_at && new Date(profile.trial_ends_at) > new Date());
+                     (profile?.trial_ends_at && new Date(profile.trial_ends_at) > now);
+  const trialDaysLeft = profile?.trial_ends_at
+    ? Math.ceil((new Date(profile.trial_ends_at).getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+    : null;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -43,9 +47,9 @@ export default async function DashboardPage() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              {isTrialing && (
+              {isTrialing && trialDaysLeft !== null && (
                 <span className="text-sm text-orange-600 font-medium">
-                  Trial: {Math.ceil((new Date(profile.trial_ends_at!).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} days left
+                  Trial: {trialDaysLeft} days left
                 </span>
               )}
               <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
@@ -65,10 +69,10 @@ export default async function DashboardPage() {
           <p className="text-gray-600 mt-1">Welcome back, {user.email}</p>
         </div>
 
-        {isTrialing && (
+        {isTrialing && profile?.trial_ends_at && (
           <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
             <p className="text-orange-800">
-              🎉 Your 14-day free trial is active. You'll be charged on {new Date(profile.trial_ends_at!).toLocaleDateString()}.
+              🎉 Your 14-day free trial is active. You&apos;ll be charged on {new Date(profile.trial_ends_at).toLocaleDateString()}.
             </p>
           </div>
         )}
