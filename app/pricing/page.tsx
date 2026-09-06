@@ -2,21 +2,20 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import type { User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
 import { PLANS } from '@/lib/stripe';
 
 export default function PricingPage() {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly');
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
+      setIsAuthenticated(Boolean(user));
       setAuthChecked(true);
     });
   }, []);
@@ -26,7 +25,7 @@ export default function PricingPage() {
       return;
     }
 
-    if (!user) {
+    if (!isAuthenticated) {
       router.push('/login?redirect=/pricing&action=trial');
       return;
     }
