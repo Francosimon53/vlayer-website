@@ -12,7 +12,6 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +31,7 @@ export default function ResetPasswordPage() {
     }
 
     try {
+      const supabase = createClient();
       const { error } = await supabase.auth.updateUser({ password });
 
       if (error) {
@@ -42,7 +42,7 @@ export default function ResetPasswordPage() {
           router.push('/dashboard');
         }, 2000);
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred');
     } finally {
       setLoading(false);

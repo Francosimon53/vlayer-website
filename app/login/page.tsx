@@ -68,9 +68,9 @@ export default async function LoginPage({
                 <input type="checkbox" className="mr-2" />
                 <span className="text-sm text-gray-600">Remember me</span>
               </label>
-              <a href="/forgot-password" className="text-sm text-[#0066CC] hover:text-[#0052A3]">
+              <Link href="/forgot-password" className="text-sm text-[#0066CC] hover:text-[#0052A3]">
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             <button
@@ -117,7 +117,7 @@ export default async function LoginPage({
         </div>
 
         <p className="text-center text-sm text-gray-600 mt-6">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href="/signup" className="text-[#0066CC] hover:text-[#0052A3] font-medium">
             Sign up for free
           </Link>
@@ -125,9 +125,9 @@ export default async function LoginPage({
 
         <p className="text-center text-xs text-gray-500 mt-4">
           By signing in, you agree to our{' '}
-          <a href="/terms" className="underline">Terms of Service</a>
+          <Link href="/terms" className="underline">Terms of Service</Link>
           {' '}and{' '}
-          <a href="/privacy" className="underline">Privacy Policy</a>
+          <Link href="/privacy" className="underline">Privacy Policy</Link>
         </p>
       </div>
     </div>

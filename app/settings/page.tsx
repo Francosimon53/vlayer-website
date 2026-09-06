@@ -117,7 +117,7 @@ export default async function SettingsPage() {
                       <div className="font-medium text-orange-900">Free Trial Active</div>
                       <div className="text-sm text-orange-800 mt-1">
                         Your 14-day trial ends on {new Date(profile.trial_ends_at).toLocaleDateString()}.
-                        You'll be charged $49/month after the trial ends.
+                        You&apos;ll be charged $49/month after the trial ends.
                       </div>
                     </div>
                   </div>
@@ -153,7 +153,7 @@ export default async function SettingsPage() {
 
             {isPro && (
               <p className="text-sm text-gray-600 mt-4">
-                Click "Manage Subscription" to update your payment method, view invoices, or cancel your subscription.
+                Click &quot;Manage Subscription&quot; to update your payment method, view invoices, or cancel your subscription.
               </p>
             )}
           </div>
