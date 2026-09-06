@@ -47,11 +47,12 @@ export async function POST(req: NextRequest) {
 
       if (userId) {
         const isActive = ['active', 'trialing'].includes(subscription.status);
+        const currentPeriodEnd = subscription.items.data[0]?.current_period_end;
         await supabaseAdmin.from('profiles').update({
           plan: isActive ? 'pro' : 'free',
           subscription_status: subscription.status,
-          current_period_end: subscription.current_period_end
-            ? new Date(subscription.current_period_end * 1000).toISOString()
+          current_period_end: currentPeriodEnd
+            ? new Date(currentPeriodEnd * 1000).toISOString()
             : null,
         }).eq('id', userId);
       }
