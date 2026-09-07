@@ -55,7 +55,7 @@ jobs:
         # failures (network, OOM, missing binary) by checking that vlayer-report.json was
         # actually created and is valid JSON.
         run: |
-          npx --yes verification-layer@latest scan . \
+          npx --yes --package=verification-layer@latest -- vlayer scan . \
             --config vlayer.config.json \
             --no-ai \
             -f json \
