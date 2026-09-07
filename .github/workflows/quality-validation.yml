@@ -1,3 +1,4 @@
+# Final validation after lint warning cleanup
 name: Validate audit exception reduction
 
 on:
