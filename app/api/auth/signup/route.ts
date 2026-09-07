@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { safeRedirectError } from '@/lib/api-errors';
+import { auditLogger, errorMetadata } from '@/lib/audit-logger';
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -33,6 +34,11 @@ export async function POST(req: NextRequest) {
 
   // If user is created successfully
   if (data.user) {
+    auditLogger.info(
+      { event: 'auth.signup.succeeded', userId: data.user.id },
+      'Account created',
+    );
+
     // Create profile in profiles table with free plan
     const { error: profileError } = await supabase
       .from('profiles')
@@ -46,8 +52,20 @@ export async function POST(req: NextRequest) {
       ]);
 
     if (profileError) {
-      console.error('Failed to create profile:', profileError);
+      auditLogger.error(
+        {
+          event: 'profile.create.failed',
+          userId: data.user.id,
+          ...errorMetadata(profileError),
+        },
+        'Profile creation failed',
+      );
       // Don't fail signup if profile creation fails - they can still sign in
+    } else {
+      auditLogger.info(
+        { event: 'profile.create.succeeded', userId: data.user.id },
+        'Profile created',
+      );
     }
   }
 

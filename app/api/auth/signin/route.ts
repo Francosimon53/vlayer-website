@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { auditLogger, errorMetadata } from '@/lib/audit-logger';
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -9,17 +10,26 @@ export async function POST(req: NextRequest) {
 
   const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
 
   if (error) {
+    auditLogger.warn(
+      { event: 'auth.signin.failed', ...errorMetadata(error) },
+      'Authentication failed',
+    );
     const loginUrl = new URL('/login', req.url);
     loginUrl.searchParams.set('error', 'Invalid credentials');
     if (redirect) loginUrl.searchParams.set('redirect', redirect);
     return NextResponse.redirect(loginUrl);
   }
+
+  auditLogger.info(
+    { event: 'auth.signin.succeeded', userId: data.user?.id },
+    'Authentication succeeded',
+  );
 
   // Validate redirect URL to prevent open redirects
   let redirectUrl = '/dashboard';
