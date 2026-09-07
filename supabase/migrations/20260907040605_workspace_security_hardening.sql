@@ -23,8 +23,6 @@ revoke all on public.projects, public.project_tokens, public.scans, public.findi
 
 alter view public.monthly_usage set (security_invoker = true);
 revoke all on function public.handle_new_user() from anon, authenticated;
-revoke execute on function public.handle_new_user() from public;
-revoke execute on function public.handle_updated_at() from public;
 alter function public.handle_new_user() set search_path = public, pg_temp;
 alter function public.handle_updated_at() set search_path = public, pg_temp;
 create index if not exists compliance_exceptions_user_id_idx on public.compliance_exceptions(user_id);
