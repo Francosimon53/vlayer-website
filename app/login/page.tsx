@@ -5,8 +5,9 @@ import Link from 'next/link';
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: { redirect?: string; error?: string };
+  searchParams: Promise<{ redirect?: string; error?: string }>;
 }) {
+  const search = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -14,8 +15,8 @@ export default async function LoginPage({
     redirect('/dashboard');
   }
 
-  const redirectUrl = searchParams.redirect || '';
-  const error = searchParams.error;
+  const redirectUrl = search.redirect || '';
+  const error = search.error;
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">

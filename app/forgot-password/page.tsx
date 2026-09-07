@@ -5,8 +5,9 @@ import Link from 'next/link';
 export default async function ForgotPasswordPage({
   searchParams,
 }: {
-  searchParams: { error?: string; success?: string };
+  searchParams: Promise<{ error?: string; success?: string }>;
 }) {
+  const search = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -14,8 +15,8 @@ export default async function ForgotPasswordPage({
     redirect('/dashboard');
   }
 
-  const error = searchParams.error;
-  const success = searchParams.success;
+  const error = search.error;
+  const success = search.success;
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
