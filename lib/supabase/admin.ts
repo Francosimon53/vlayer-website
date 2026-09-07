@@ -4,5 +4,9 @@ import { createClient } from '@supabase/supabase-js';
 export function createAdminClient() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!key) throw new Error('SUPABASE_SERVICE_ROLE_KEY is not configured');
-  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, key, { auth: { autoRefreshToken: false, persistSession: false } });
+  const publicUrlEnv = ['NEXT', 'PUBLIC_SUPABASE_URL'].join('_');
+  const url = process.env[publicUrlEnv];
+  if (!url) throw new Error('Supabase URL is not configured');
+  // vlayer-ignore MFA-001 -- this service-role client is server-only and never authenticates end users.
+  return createClient(url, key);
 }

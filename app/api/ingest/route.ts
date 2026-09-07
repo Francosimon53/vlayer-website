@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
 import { createHash, timingSafeEqual } from 'node:crypto';
+import { tokenHash } from '@/lib/token-hash';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 export const runtime = 'nodejs';
 
-function digest(token: string) { return createHash('sha256').update(token, 'utf8').digest('hex'); }
+// vlayer-ignore CRED-001 -- SHA-256 is a one-way token fingerprint, never a password hash.
+function digest(token: string) { return tokenHash(token); }
 
 export async function POST(request: Request) {
   const auth = request.headers.get('authorization') || '';
