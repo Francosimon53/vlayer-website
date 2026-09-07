@@ -5,8 +5,9 @@ import Link from 'next/link';
 export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: Promise<{ error?: string }>;
 }) {
+  const search = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -14,7 +15,7 @@ export default async function SignupPage({
     redirect('/dashboard');
   }
 
-  const error = searchParams.error;
+  const error = search.error;
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
